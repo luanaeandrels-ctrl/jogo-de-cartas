@@ -88,7 +88,7 @@
 
         .container-principal {
             display: grid;
-            grid-template-columns: 345px 1fr;
+            grid-template-columns: 350px 1fr;
             gap: 18px;
             align-items: start;
         }
@@ -142,7 +142,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            max-height: 460px;
+            max-height: 480px;
             overflow-y: auto;
             padding-right: 4px;
         }
@@ -209,18 +209,21 @@
             line-height: 1.25;
         }
 
-        .quadro-participante input.input-acao-slot {
+        .quadro-participante textarea.bloco-acoes-jogador {
             width: 100%;
-            padding: 6px 9px;
+            min-height: 62px;
+            resize: vertical;
+            padding: 8px 9px;
             border-radius: 7px;
-            border: 1px solid #34344e;
+            border: 1px solid #3d3d5c;
             background-color: #0e0e16;
             color: #ffffff;
             font-size: 0.82rem;
             font-weight: 600;
+            line-height: 1.35;
         }
 
-        .quadro-participante input.input-acao-slot:focus {
+        .quadro-participante textarea.bloco-acoes-jogador:focus {
             outline: none;
             border-color: #00cec9;
         }
@@ -380,7 +383,6 @@
             text-overflow: ellipsis;
         }
 
-        /* Tarja / tracinho de papel só aparece quando a tarja está ligada */
         .tracinho-papel {
             position: absolute;
             top: 10px;
@@ -660,7 +662,8 @@
     <main class="container-principal">
         <aside class="painel-controle">
             <div class="box-participantes">
-                <h2>👥 Participantes &amp; Cartas Escolhidas</h2>
+                <h2>👥 Participantes &amp; Bloco de Ações</h2>
+
                 <div class="barra-add-participante">
                     <input
                         type="text"
@@ -762,10 +765,10 @@
         let jogadores = [];
         let proximoIdParticipante = 5;
         let participantes = [
-            { id: 1, nome: 'Participante 1', cartasEscolhidas: [1, 2], acoes: ['', '', ''], usadasNaRodada: { ataque: false, defesa: false, denuncia: false } },
-            { id: 2, nome: 'Participante 2', cartasEscolhidas: [3, 4], acoes: ['', '', ''], usadasNaRodada: { ataque: false, defesa: false, denuncia: false } },
-            { id: 3, nome: 'Participante 3', cartasEscolhidas: [5, 6], acoes: ['', '', ''], usadasNaRodada: { ataque: false, defesa: false, denuncia: false } },
-            { id: 4, nome: 'Participante 4', cartasEscolhidas: [7, 8], acoes: ['', '', ''], usadasNaRodada: { ataque: false, defesa: false, denuncia: false } }
+            { id: 1, nome: 'Participante 1', cartasEscolhidas: [1, 2], blocoAcoes: '', usadasNaRodada: { ataque: false, defesa: false, denuncia: false } },
+            { id: 2, nome: 'Participante 2', cartasEscolhidas: [3, 4], blocoAcoes: '', usadasNaRodada: { ataque: false, defesa: false, denuncia: false } },
+            { id: 3, nome: 'Participante 3', cartasEscolhidas: [5, 6], blocoAcoes: '', usadasNaRodada: { ataque: false, defesa: false, denuncia: false } },
+            { id: 4, nome: 'Participante 4', cartasEscolhidas: [7, 8], blocoAcoes: '', usadasNaRodada: { ataque: false, defesa: false, denuncia: false } }
         ];
         let mostrarTarja = false;
         let todasAbertas = false;
@@ -930,7 +933,7 @@
             });
 
             participantes.forEach(p => {
-                p.acoes = ['', '', ''];
+                p.blocoAcoes = '';
                 p.usadasNaRodada = { ataque: false, defesa: false, denuncia: false };
             });
 
@@ -945,7 +948,7 @@
                 id: proximoIdParticipante++,
                 nome,
                 cartasEscolhidas: [],
-                acoes: ['', '', ''],
+                blocoAcoes: '',
                 usadasNaRodada: { ataque: false, defesa: false, denuncia: false }
             };
             participantes.push(novo);
@@ -1015,15 +1018,15 @@
             renderizarMesa();
         }
 
-        function atualizarSlotAcao(id, slotIdx, valor) {
+        function atualizarBlocoAcao(id, valor) {
             const p = participantes.find(item => item.id === id);
             if (!p) return;
-            p.acoes[slotIdx] = valor;
+            p.blocoAcoes = valor;
         }
 
         function limparAcoesDaRodada() {
             participantes.forEach(p => {
-                p.acoes = ['', '', ''];
+                p.blocoAcoes = '';
                 p.usadasNaRodada = { ataque: false, defesa: false, denuncia: false };
             });
             jogadores.forEach(j => {
@@ -1032,7 +1035,7 @@
             rodadaAtual++;
             renderizarParticipantes();
             renderizarMesa();
-            mostrarBalao(`Rodada ${rodadaAtual} pronta! Cole as 3 ações de cada participante.`, 'sucesso');
+            mostrarBalao(`Rodada ${rodadaAtual} pronta! Cole o bloco de ações de cada participante.`, 'sucesso');
         }
 
         function obterDonosDaCarta(numeroCarta) {
@@ -1089,27 +1092,11 @@
                         >
                     </div>
                     <div class="status-vitoria-jogador">${obterStatusCartasJogador(p)}</div>
-                    <input
-                        type="text"
-                        class="input-acao-slot"
-                        value="${p.acoes[0] || ''}"
-                        placeholder="Ação 1 (ex: 8 > 14 defesa)"
-                        oninput="atualizarSlotAcao(${p.id}, 0, this.value)"
-                    >
-                    <input
-                        type="text"
-                        class="input-acao-slot"
-                        value="${p.acoes[1] || ''}"
-                        placeholder="Ação 2 (ex: 8 > 10 ataque)"
-                        oninput="atualizarSlotAcao(${p.id}, 1, this.value)"
-                    >
-                    <input
-                        type="text"
-                        class="input-acao-slot"
-                        value="${p.acoes[2] || ''}"
-                        placeholder="Ação 3 (ex: 8 > 5 denuncia)"
-                        oninput="atualizarSlotAcao(${p.id}, 2, this.value)"
-                    >
+                    <textarea
+                        class="bloco-acoes-jogador"
+                        placeholder="Cole tudo junto (vírgula ou espaço): ex: 8 > 12 ataque, 6 > 13 defesa, 2 > 10 denuncia"
+                        oninput="atualizarBlocoAcao(${p.id}, this.value)"
+                    >${p.blocoAcoes || ''}</textarea>
                 `;
                 wrap.appendChild(div);
             });
@@ -1128,35 +1115,63 @@
             return null;
         }
 
-        function interpretarComando(textoBruto) {
-            const match = textoBruto.trim().match(/^(\d+)\s*(?:>|->|-)\s*(\d+)\s+([a-zA-ZÀ-ÿ]+.*)$/);
-            if (!match) return null;
+        function extrairComandosDoBloco(textoBruto) {
+            const limpo = (textoBruto || '').trim();
+            if (!limpo) return { comandos: [], invalido: null };
 
-            const origem = parseInt(match[1], 10);
-            const alvo = parseInt(match[2], 10);
-            const acao = normalizarAcao(match[3]);
+            const partesPorSeparador = limpo
+                .split(/[,;\n\r]+/)
+                .map(p => p.trim())
+                .filter(Boolean);
 
-            if (!acao || Number.isNaN(origem) || Number.isNaN(alvo)) return null;
-            return { origem, alvo, acao, original: textoBruto.trim() };
+            const tokensSoltos = [];
+            const regexJogada = /(\d+\s*(?:>|->|-)\s*\d+\s+(?:defesa|defesas|proteger|protege|ataque|ataques|atacar|denuncia|denuncias|denunciar|investigar|investigacao)[a-zA-ZÀ-ÿ]*)/gi;
+
+            for (const parte of partesPorSeparador) {
+                const matches = parte.match(regexJogada);
+                if (matches && matches.length > 0) {
+                    const sobra = parte.replace(regexJogada, '').trim();
+                    if (sobra) {
+                        return { comandos: [], invalido: sobra };
+                    }
+                    matches.forEach(m => tokensSoltos.push(m.trim()));
+                } else {
+                    tokensSoltos.push(parte);
+                }
+            }
+
+            const comandos = [];
+            for (const token of tokensSoltos) {
+                const match = token.match(/^(\d+)\s*(?:>|->|-)\s*(\d+)\s+([a-zA-ZÀ-ÿ]+.*)$/);
+                if (!match) {
+                    return { comandos: [], invalido: token };
+                }
+                const origem = parseInt(match[1], 10);
+                const alvo = parseInt(match[2], 10);
+                const acao = normalizarAcao(match[3]);
+                if (!acao || Number.isNaN(origem) || Number.isNaN(alvo)) {
+                    return { comandos: [], invalido: token };
+                }
+                comandos.push({ origem, alvo, acao, original: token.trim() });
+            }
+
+            return { comandos, invalido: null };
         }
 
         function executarPlayRodada() {
             const comandosParaRodar = [];
 
             for (const p of participantes) {
+                const { comandos, invalido } = extrairComandosDoBloco(p.blocoAcoes);
+                if (invalido) {
+                    mostrarBalao(`Em "${p.nome}", não entendi: "${invalido}". Use ex: 8 > 12 ataque, 6 > 13 defesa`, 'erro');
+                    return;
+                }
+
                 const usadasNesteBloco = { ataque: false, defesa: false, denuncia: false };
-                for (const rawAcao of p.acoes) {
-                    const texto = (rawAcao || '').trim();
-                    if (!texto) continue;
-
-                    const parsed = interpretarComando(texto);
-                    if (!parsed) {
-                        mostrarBalao(`Em "${p.nome}", escreva nesse formato: 8 > 14 defesa (com espaço antes da ação).`, 'erro');
-                        return;
-                    }
-
+                for (const parsed of comandos) {
                     if (usadasNesteBloco[parsed.acao] || p.usadasNaRodada[parsed.acao]) {
-                        mostrarBalao(`${p.nome} já usou "${parsed.acao}" nesta rodada.`, 'erro');
+                        mostrarBalao(`${p.nome} repetiu "${parsed.acao}" na mesma rodada.`, 'erro');
                         return;
                     }
                     usadasNesteBloco[parsed.acao] = true;
@@ -1164,7 +1179,7 @@
                     const ator = jogadores.find(j => j.numero === parsed.origem && j.vivo);
                     const alvo = jogadores.find(j => j.numero === parsed.alvo && j.vivo);
                     if (!ator || !alvo) {
-                        mostrarBalao(`Número inválido ou já eliminado em "${texto}".`, 'erro');
+                        mostrarBalao(`Número inválido ou já eliminado em "${parsed.original}".`, 'erro');
                         return;
                     }
 
@@ -1178,7 +1193,7 @@
             }
 
             if (comandosParaRodar.length === 0) {
-                mostrarBalao('Cole pelo menos uma ação antes de clicar em Play.', 'erro');
+                mostrarBalao('Cole o bloco de ações de pelo menos um participante antes de clicar em Play.', 'erro');
                 return;
             }
 
@@ -1288,7 +1303,7 @@
             }
 
             participantes.forEach(p => {
-                p.acoes = ['', '', ''];
+                p.blocoAcoes = '';
             });
 
             if (cenaDestaque) {
