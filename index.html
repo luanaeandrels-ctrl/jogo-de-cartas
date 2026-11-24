@@ -292,6 +292,68 @@
             box-shadow: 0 0 12px rgba(0, 206, 201, 0.7);
         }
 
+        /* Balãozinho Bonitinho de Aviso / Erro */
+        .balao-aviso-wrap {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+            pointer-events: none;
+        }
+
+        .balao-aviso {
+            pointer-events: auto;
+            background: linear-gradient(135deg, #27273b, #1d1d2d);
+            color: #ffffff;
+            border: 2px solid #ff6b6b;
+            border-left: 6px solid #ff4757;
+            border-radius: 14px;
+            padding: 13px 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            animation: entrarBalao 0.25s ease-out;
+        }
+
+        .balao-aviso.sucesso {
+            border-color: #00cec9;
+            border-left-color: #00b894;
+        }
+
+        .balao-aviso-texto {
+            font-size: 0.92rem;
+            font-weight: 600;
+            line-height: 1.35;
+        }
+
+        .balao-aviso-fechar {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            border-radius: 8px;
+            padding: 4px 9px;
+            font-size: 0.8rem;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        @keyframes entrarBalao {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Palco Grande 9:16 na Tela do PC */
         .palco-overlay {
             position: fixed;
             inset: 0;
@@ -360,19 +422,22 @@
             display: block;
         }
 
-        .legenda-fala {
+        /* Frase pequenininha em cima sem tampar o nome embaixo */
+        .frase-topo-acao {
             position: absolute;
+            top: 10px;
             left: 10px;
             right: 10px;
-            bottom: 12px;
-            background: #2f54eb;
+            z-index: 3;
+            background: rgba(24, 34, 68, 0.92);
             color: #ffffff;
-            padding: 9px 12px;
-            border-radius: 10px;
-            font-size: 0.95rem;
+            border: 1px solid rgba(116, 143, 252, 0.7);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.78rem;
             font-weight: 700;
             text-align: center;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
         }
 
         .etiqueta-bias {
@@ -423,10 +488,17 @@
                 grid-template-columns: repeat(2, minmax(130px, 1fr));
                 gap: 10px;
             }
+            .balao-aviso-wrap {
+                left: 12px;
+                right: 12px;
+                max-width: none;
+            }
         }
     </style>
 </head>
 <body>
+    <div id="balao-aviso-wrap" class="balao-aviso-wrap" aria-live="polite"></div>
+
     <header>
         <h1>🃏 MESA DE INVESTIGAÇÃO</h1>
         <div class="controles-topo">
@@ -455,11 +527,11 @@
                     <input
                         type="text"
                         id="input-comando-live"
-                        placeholder="Ex: 8>16 defesa"
+                        placeholder="Ex: 8 > 16 defesa"
                         onkeydown="if(event.key === 'Enter') processarComandoLive()"
                     >
                     <div class="dica-comando">
-                        Cole do chat neste formato: <strong>8&gt;16 defesa</strong>, <strong>8&gt;14 ataque</strong> ou <strong>8&gt;10 denuncia</strong>.
+                        Escreva neste formato: <strong>8 &gt; 16 defesa</strong>, <strong>8 &gt; 14 ataque</strong> ou <strong>8 &gt; 10 denuncia</strong>.
                     </div>
                     <button class="btn-confirmar" onclick="processarComandoLive()">⚡ Mostrar na Tela</button>
                 </div>
@@ -483,13 +555,13 @@
     <div id="palco-overlay" class="palco-overlay">
         <div class="palco-card">
             <div class="palco-topo-wrap">
-                <div id="palco-comando-texto" class="palco-comando-topo">8&gt;16 defesa</div>
+                <div id="palco-comando-texto" class="palco-comando-topo">8 &gt; 16 defesa</div>
             </div>
 
             <div class="palco-grade-dupla">
                 <div class="quadro-palco">
+                    <div id="palco-fala-acao" class="frase-topo-acao">O número 16 está sob minha proteção</div>
                     <img id="palco-img-acao" src="defesa.png" alt="Cartinha de ação" onerror="tratarErroAcao(this)">
-                    <div id="palco-fala-acao" class="legenda-fala">O número 16 está sob minha proteção</div>
                 </div>
 
                 <div class="quadro-palco">
@@ -551,6 +623,33 @@
         let rodadaAtual = 1;
         let jogadaPendenteMesa = null;
 
+        function mostrarBalao(mensagem, tipo = 'erro') {
+            const wrap = document.getElementById('balao-aviso-wrap');
+            if (!wrap) return;
+
+            const balao = document.createElement('div');
+            balao.className = `balao-aviso ${tipo === 'sucesso' ? 'sucesso' : ''}`;
+
+            const textoEl = document.createElement('div');
+            textoEl.className = 'balao-aviso-texto';
+            textoEl.innerText = mensagem;
+
+            const btnFechar = document.createElement('button');
+            btnFechar.className = 'balao-aviso-fechar';
+            btnFechar.innerText = '✕';
+            btnFechar.onclick = () => balao.remove();
+
+            balao.appendChild(textoEl);
+            balao.appendChild(btnFechar);
+            wrap.appendChild(balao);
+
+            setTimeout(() => {
+                if (balao.parentElement) {
+                    balao.remove();
+                }
+            }, 4200);
+        }
+
         function obterQuantidadeCartas() {
             const input = document.getElementById('qtd-cartas');
             let valor = parseInt(input ? input.value : '20', 10);
@@ -564,7 +663,6 @@
             return String(num).padStart(2, '0');
         }
 
-        // Tenta primeiro "img (02).jpg" e, se falhar, tenta "IMG (02).jpg"
         function montarCaminhoFoto(pacote, indiceFoto, maiusculo = false) {
             const prefixo = maiusculo ? 'IMG (' : 'img (';
             return `${pacote.pasta}${prefixo}${formatarDoisDigitos(indiceFoto)}${pacote.sufixo}`;
@@ -644,7 +742,7 @@
         function recomecarComSobreviventes() {
             const vivos = jogadores.filter(j => j.vivo);
             if (vivos.length <= 3) {
-                alert('Fim de jogo! Restam 3 ou menos participantes na mesa.');
+                mostrarBalao('Fim de jogo! Restam 3 ou menos participantes na mesa.', 'erro');
                 return;
             }
 
@@ -697,7 +795,8 @@
         }
 
         function interpretarComando(textoBruto) {
-            const match = textoBruto.trim().match(/^(\d+)\s*(?:>|->|-)\s*(\d+)\s+(.+)$/);
+            // Exige espaço antes da ação para evitar "9 > 12defesa" colado
+            const match = textoBruto.trim().match(/^(\d+)\s*(?:>|->|-)\s*(\d+)\s+([a-zA-ZÀ-ÿ]+.*)$/);
             if (!match) return null;
 
             const origem = parseInt(match[1], 10);
@@ -714,7 +813,7 @@
             const parsed = interpretarComando(texto);
 
             if (!parsed) {
-                alert('Use o formato: 8>16 defesa, 8>14 ataque ou 8>10 denuncia');
+                mostrarBalao('Escreva nesse formato: 8 > 16 defesa (com espaço antes da ação).', 'erro');
                 return;
             }
 
@@ -722,12 +821,12 @@
             const alvo = jogadores.find(j => j.numero === parsed.alvo && j.vivo);
 
             if (!ator || !alvo) {
-                alert('Número inválido ou participante já eliminado.');
+                mostrarBalao('Número inválido ou participante já eliminado.', 'erro');
                 return;
             }
 
             if (ator.ultimaAcao === parsed.acao) {
-                alert(`O nº ${ator.numero} não pode repetir "${parsed.acao.toUpperCase()}" em rodadas seguidas.`);
+                mostrarBalao(`O nº ${ator.numero} não pode repetir "${parsed.acao.toUpperCase()}" em rodadas seguidas.`, 'erro');
                 return;
             }
 
@@ -751,17 +850,17 @@
             } else if (parsed.acao === 'ataque') {
                 if (ator.papel !== 'Ladrão 🦹🏽‍♀️') {
                     imagemAcao = IMAGENS_ACAO.ataque;
-                    falaAcao = `O número ${alvo.numero} sofreu ataque (sem eliminação do Ladrão)`;
+                    falaAcao = `Ataque no nº ${alvo.numero} (sem eliminação do Ladrão)`;
                     statusRetorno = `Ao voltar para a mesa, a carta #${alvo.numero} continua VIRADA PARA BAIXO.`;
                     adicionarLog(`⚔️ [${parsed.original}] Nº ${ator.numero} atacou o nº ${alvo.numero}.`);
                 } else if (alvo.papel === 'Policial 👮🏽‍♀️') {
                     imagemAcao = IMAGENS_ACAO.ataqueFalhou;
-                    falaAcao = `O número ${alvo.numero} é o Policial e o ataque falhou!`;
+                    falaAcao = `Ataque falhou! Nº ${alvo.numero} é o Policial`;
                     statusRetorno = `Ao voltar para a mesa, a carta #${alvo.numero} volta VIRADA PARA BAIXO.`;
                     adicionarLog(`🛡️ [${parsed.original}] Ladrão (#${ator.numero}) atacou o Policial (#${alvo.numero}) e falhou.`);
                 } else if (alvo.protegido) {
                     imagemAcao = IMAGENS_ACAO.ataqueFalhou;
-                    falaAcao = `O número ${alvo.numero} estava protegido! Ladrão #${ator.numero} foi pego!`;
+                    falaAcao = `Nº ${alvo.numero} protegido! Ladrão #${ator.numero} foi pego`;
                     statusRetorno = `Ao voltar para a mesa, a carta #${alvo.numero} volta VIRADA PARA BAIXO e o Ladrão #${ator.numero} fica VIRADO PARA CIMA (eliminado).`;
                     jogadaPendenteMesa = {
                         tipo: 'eliminar',
@@ -771,7 +870,7 @@
                     adicionarLog(`🚨 [${parsed.original}] Ladrão (#${ator.numero}) atacou #${alvo.numero} protegido e foi preso!`);
                 } else {
                     imagemAcao = IMAGENS_ACAO.biasSequestrado;
-                    falaAcao = `O número ${alvo.numero} não tinha defesa e foi eliminado!`;
+                    falaAcao = `Sem defesa! Nº ${alvo.numero} foi eliminado`;
                     statusRetorno = `Ao voltar para a mesa, a carta #${alvo.numero} ficará VIRADA PARA CIMA (eliminada).`;
                     jogadaPendenteMesa = {
                         tipo: 'eliminar',
@@ -782,7 +881,7 @@
             } else if (parsed.acao === 'denuncia') {
                 if (alvo.papel === 'Ladrão 🦹🏽‍♀️') {
                     imagemAcao = IMAGENS_ACAO.denunciaCerta;
-                    falaAcao = `Denúncia certa! O número ${alvo.numero} era o Ladrão!`;
+                    falaAcao = `Denúncia certa! Nº ${alvo.numero} era o Ladrão`;
                     statusRetorno = `Ao voltar para a mesa, a carta #${alvo.numero} ficará VIRADA PARA CIMA (eliminada).`;
                     jogadaPendenteMesa = {
                         tipo: 'eliminar',
@@ -792,7 +891,7 @@
                     adicionarLog(`🎉 [${parsed.original}] Nº ${ator.numero} acertou a denúncia no nº ${alvo.numero}!`);
                 } else {
                     imagemAcao = IMAGENS_ACAO.denuncia;
-                    falaAcao = `Denúncia no número ${alvo.numero}: não era o Ladrão!`;
+                    falaAcao = `Denúncia no nº ${alvo.numero}: não era o Ladrão`;
                     statusRetorno = `Ao voltar para a mesa, a carta #${alvo.numero} continua VIRADA PARA BAIXO.`;
                     adicionarLog(`👸🏽 [${parsed.original}] Nº ${ator.numero} denunciou o nº ${alvo.numero} (incorreto).`);
                 }
