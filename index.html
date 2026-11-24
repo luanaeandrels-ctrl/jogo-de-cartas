@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo de Cartas</title>
+    <title>Jogo de Cartas - Palco da Live</title>
     <style>
         * {
             box-sizing: border-box;
@@ -14,7 +14,7 @@
 
         body {
             background-color: #121218;
-            background-image: linear-gradient(rgba(12, 12, 20, 0.78), rgba(12, 12, 20, 0.86)), url('fundo.png');
+            background-image: linear-gradient(rgba(12, 12, 20, 0.72), rgba(12, 12, 20, 0.84)), url('fundo.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -29,15 +29,15 @@
             justify-content: space-between;
             align-items: center;
             gap: 10px;
-            background-color: rgba(30, 30, 42, 0.92);
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #33334d;
+            background-color: rgba(26, 26, 38, 0.92);
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 1px solid #383854;
         }
 
         header h1 {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             color: #ffcc00;
         }
 
@@ -50,15 +50,15 @@
 
         .label-inline {
             font-size: 0.9rem;
-            color: #cfcfe6;
+            color: #d6d6ec;
         }
 
         .controles-topo select,
         .controles-topo input[type="number"] {
-            padding: 9px 10px;
+            padding: 8px 10px;
             border-radius: 6px;
             border: 1px solid #555577;
-            background-color: #2d2d44;
+            background-color: #26263a;
             color: white;
             font-weight: bold;
         }
@@ -67,126 +67,129 @@
             width: 68px;
         }
 
-        .controles-topo button {
-            padding: 10px 14px;
+        button {
+            padding: 9px 14px;
             border: none;
-            border-radius: 6px;
+            border-radius: 7px;
             font-weight: bold;
             cursor: pointer;
             color: white;
             background-color: #6c5ce7;
+            transition: background-color 0.2s ease, transform 0.1s ease;
         }
 
-        .controles-topo button:hover {
+        button:hover {
             background-color: #5649c0;
+        }
+
+        button:active {
+            transform: scale(0.98);
         }
 
         .container-principal {
             display: grid;
-            grid-template-columns: 290px 1fr;
-            gap: 20px;
+            grid-template-columns: 310px 1fr;
+            gap: 18px;
+            align-items: start;
         }
 
         .painel-controle {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 14px;
         }
 
-        .box-dado, .box-acoes, .box-log {
-            background-color: rgba(30, 30, 42, 0.92);
+        .box-comando,
+        .box-dado,
+        .box-log {
+            background-color: rgba(26, 26, 38, 0.92);
             padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #33334d;
+            border-radius: 12px;
+            border: 1px solid #383854;
         }
 
         h2 {
-            font-size: 1.05rem;
+            font-size: 1rem;
             margin-bottom: 10px;
             color: #a29bfe;
         }
 
+        .campo-cola-codigo {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .campo-cola-codigo input {
+            width: 100%;
+            padding: 11px 12px;
+            border-radius: 8px;
+            border: 2px solid #6c5ce7;
+            background-color: #12121a;
+            color: #ffcc00;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .dica-comando {
+            font-size: 0.78rem;
+            color: #b8b8d4;
+            line-height: 1.35;
+        }
+
+        .btn-confirmar {
+            background-color: #00b894;
+            width: 100%;
+        }
+
+        .btn-confirmar:hover {
+            background-color: #00997a;
+        }
+
         .dado-display {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             font-weight: bold;
             text-align: center;
-            background: #121218;
-            padding: 12px;
+            background: #12121a;
+            padding: 10px;
             border-radius: 8px;
             margin-bottom: 10px;
             color: #00cec9;
             border: 2px dashed #00cec9;
         }
 
-        .painel-controle button {
+        .box-dado button {
             width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 6px;
-            background-color: #00b894;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
+            background-color: #0984e3;
         }
 
-        .painel-controle button:hover {
-            background-color: #00997a;
-        }
-
-        .box-acoes label {
-            display: block;
-            margin-top: 8px;
-            font-size: 0.9rem;
-        }
-
-        .box-acoes input, .box-acoes select {
-            width: 100%;
-            padding: 8px;
-            margin-top: 4px;
-            margin-bottom: 8px;
-            border-radius: 5px;
-            border: 1px solid #444;
-            background-color: #121218;
-            color: white;
-        }
-
-        .card-acao-visual {
-            margin-top: 10px;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 2px solid #3d3d5c;
-            background-color: #121218;
-        }
-
-        .card-acao-visual img {
-            width: 100%;
-            max-height: 220px;
-            object-fit: contain;
-            display: block;
+        .box-dado button:hover {
+            background-color: #076bb8;
         }
 
         .box-log {
-            max-height: 260px;
+            max-height: 240px;
             overflow-y: auto;
         }
 
         #lista-log {
             list-style: none;
-            font-size: 0.85rem;
+            font-size: 0.84rem;
         }
 
         #lista-log li {
             padding: 6px 0;
-            border-bottom: 1px solid #2d2d3d;
+            border-bottom: 1px solid #2b2b3d;
         }
 
         .mesa-cartas {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 12px;
-            background-color: rgba(18, 18, 28, 0.45);
-            padding: 12px;
+            background-color: rgba(18, 18, 28, 0.52);
+            padding: 14px;
             border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .carta-container {
@@ -257,7 +260,7 @@
             color: white;
             padding: 4px 8px;
             border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: bold;
             display: none;
         }
@@ -275,14 +278,147 @@
         }
 
         .carta-container.eliminada .carta-face {
-            opacity: 0.35;
+            opacity: 0.4;
             filter: grayscale(100%);
             border-color: #d63031;
         }
 
         .carta-container.protegida .carta-face {
-            border-color: #0984e3;
-            box-shadow: 0 0 12px #0984e3;
+            border-color: #00cec9;
+            box-shadow: 0 0 12px rgba(0, 206, 201, 0.7);
+        }
+
+        /* Palco Grande da Live */
+        .palco-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 8, 14, 0.88);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 999;
+        }
+
+        .palco-overlay.ativo {
+            display: flex;
+        }
+
+        .palco-card {
+            width: 100%;
+            max-width: 920px;
+            background: #1b1b28;
+            border: 2px solid #57577a;
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75);
+        }
+
+        .palco-comando-topo {
+            display: inline-block;
+            background: #ffffff;
+            color: #111118;
+            font-size: 1.5rem;
+            font-weight: 900;
+            padding: 8px 24px;
+            border-radius: 12px;
+            border: 3px solid #111118;
+            margin: 0 auto 18px auto;
+        }
+
+        .palco-topo-wrap {
+            text-align: center;
+        }
+
+        .palco-grade-dupla {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(240px, 1fr));
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .quadro-palco {
+            position: relative;
+            background: #12121b;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 2px solid #3c3c59;
+            min-height: 360px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .quadro-palco img {
+            width: 100%;
+            height: 360px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .legenda-fala {
+            position: absolute;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            background: #2f54eb;
+            color: #ffffff;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+        }
+
+        .etiqueta-bias {
+            position: absolute;
+            left: 14px;
+            bottom: 14px;
+            background: #4b49d8;
+            color: #ffffff;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .palco-rodape {
+            margin-top: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .status-retorno {
+            font-size: 0.92rem;
+            color: #ffd166;
+            font-weight: 600;
+        }
+
+        .btn-fechar-palco {
+            background-color: #00b894;
+            padding: 11px 22px;
+            font-size: 1rem;
+        }
+
+        .btn-fechar-palco:hover {
+            background-color: #00997a;
+        }
+
+        @media (max-width: 820px) {
+            .container-principal {
+                grid-template-columns: 1fr;
+            }
+            .mesa-cartas {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .palco-grade-dupla {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -309,32 +445,26 @@
 
     <main class="container-principal">
         <aside class="painel-controle">
+            <div class="box-comando">
+                <h2>📋 Colar Código da Live</h2>
+                <div class="campo-cola-codigo">
+                    <input
+                        type="text"
+                        id="input-comando-live"
+                        placeholder="Ex: 8>16 defesa"
+                        onkeydown="if(event.key === 'Enter') processarComandoLive()"
+                    >
+                    <div class="dica-comando">
+                        Cole do chat neste formato: <strong>8&gt;16 defesa</strong>, <strong>8&gt;14 ataque</strong> ou <strong>8&gt;10 denuncia</strong>.
+                    </div>
+                    <button class="btn-confirmar" onclick="processarComandoLive()">⚡ Mostrar na Tela</button>
+                </div>
+            </div>
+
             <div class="box-dado">
                 <h2>🎲 Dado</h2>
                 <div id="resultado-dado" class="dado-display">-</div>
                 <button onclick="rolarDado()">Rolar Dado (1 a 20)</button>
-            </div>
-
-            <div class="box-acoes">
-                <h2>⚡ Jogada</h2>
-                <label for="jogador-origem">Quem age (Nº na mesa):</label>
-                <input type="number" id="jogador-origem" min="1" max="20" placeholder="Ex: 6">
-
-                <label for="tipo-acao">Ação:</label>
-                <select id="tipo-acao">
-                    <option value="ataque">🦹🏽‍♀️ Ataque</option>
-                    <option value="defesa">👮🏽‍♀️ Defesa</option>
-                    <option value="denuncia">👸🏽 Denúncia</option>
-                </select>
-
-                <label for="jogador-alvo">Alvo (Nº na mesa):</label>
-                <input type="number" id="jogador-alvo" min="1" max="20" placeholder="Ex: 10">
-
-                <button onclick="registrarAcao()">Confirmar Ação</button>
-
-                <div class="card-acao-visual">
-                    <img id="imagem-acao-atual" src="investigacao.png" alt="Cartinha de ação" onerror="tratarErroAcao(this)">
-                </div>
             </div>
 
             <div class="box-log">
@@ -345,6 +475,32 @@
 
         <section class="mesa-cartas" id="mesa-cartas"></section>
     </main>
+
+    <!-- Palco Grande na Tela do PC -->
+    <div id="palco-overlay" class="palco-overlay">
+        <div class="palco-card">
+            <div class="palco-topo-wrap">
+                <div id="palco-comando-texto" class="palco-comando-topo">8&gt;16 defesa</div>
+            </div>
+
+            <div class="palco-grade-dupla">
+                <div class="quadro-palco">
+                    <img id="palco-img-acao" src="defesa.png" alt="Cartinha de ação" onerror="tratarErroAcao(this)">
+                    <div id="palco-fala-acao" class="legenda-fala">O número 16 está sob minha proteção</div>
+                </div>
+
+                <div class="quadro-palco">
+                    <img id="palco-img-bias" src="" alt="Carta do bias" onerror="tratarErroImagem(this, 1)">
+                    <div id="palco-nome-bias" class="etiqueta-bias">Carta #16</div>
+                </div>
+            </div>
+
+            <div class="palco-rodape">
+                <span id="palco-status-retorno" class="status-retorno"></span>
+                <button class="btn-fechar-palco" onclick="fecharPalco()">Voltar para a Mesa</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const FUNDOS_VERSO = [
@@ -364,24 +520,27 @@
             investigacao: 'investigacao.png'
         };
 
-        // Tudo na raiz junto do index.html: ajuste "totalDisponivel" conforme as fotos que subir
         const PACOTES = {
             'atores-asiaticos': {
+                pasta: 'atores-asiaticos/',
                 prefixo: 'IMG (',
                 sufixo: ').jpg',
                 totalDisponivel: 37
             },
             'atrizes-asiaticas': {
+                pasta: 'atrizes-asiaticas/',
                 prefixo: 'IMG (',
                 sufixo: ').jpg',
                 totalDisponivel: 20
             },
             'atores-ocidentais': {
+                pasta: 'atores-ocidentais/',
                 prefixo: 'IMG (',
                 sufixo: ').jpg',
                 totalDisponivel: 20
             },
             'atrizes-ocidentais': {
+                pasta: 'atrizes-ocidentais/',
                 prefixo: 'IMG (',
                 sufixo: ').jpg',
                 totalDisponivel: 20
@@ -391,13 +550,7 @@
         let jogadores = [];
         let modoMestre = false;
         let rodadaAtual = 1;
-
-        function mostrarCartinhaAcao(caminho) {
-            const img = document.getElementById('imagem-acao-atual');
-            if (!img || !caminho) return;
-            img.dataset.fallbackAplicado = 'false';
-            img.src = caminho;
-        }
+        let jogadaPendenteMesa = null;
 
         function obterQuantidadeCartas() {
             const input = document.getElementById('qtd-cartas');
@@ -413,7 +566,8 @@
         }
 
         function nomeArquivoImagem(pacote, indiceFoto) {
-            return `${pacote.prefixo}${formatarNumeroDoisDigitos(indiceFoto)}${pacote.sufixo}`;
+            const pasta = pacote.pasta || '';
+            return `${pasta}${pacote.prefixo}${formatarNumeroDoisDigitos(indiceFoto)}${pacote.sufixo}`;
         }
 
         function escolherFundoAleatorio() {
@@ -424,11 +578,9 @@
         function sortearIndicesFotos(totalDisponivel, quantidade) {
             const limite = Math.max(1, totalDisponivel);
             const pool = [];
-
             for (let i = 1; i <= limite; i++) {
                 pool.push(i);
             }
-
             pool.sort(() => Math.random() - 0.5);
 
             const escolhidos = [];
@@ -463,7 +615,6 @@
 
         function sortearPapeis() {
             const vivos = jogadores.filter(j => j.vivo);
-
             vivos.forEach(j => {
                 j.papel = 'Vítima 👸🏽';
                 j.protegido = false;
@@ -477,14 +628,15 @@
                 vivos[indices[1]].papel = 'Policial 👮🏽‍♀️';
             }
 
-            adicionarLog(`🎲 ${jogadores.length} cartas na mesa | Papéis sorteados entre ${vivos.length} ativos.`);
+            adicionarLog(`🎲 ${jogadores.length} cartas | Papéis sorteados entre ${vivos.length} ativos.`);
         }
 
         function iniciarJogo() {
+            jogadaPendenteMesa = null;
+            fecharPalco(false);
             criarBaralhoInicial();
             sortearPapeis();
             rodadaAtual = 1;
-            mostrarCartinhaAcao(IMAGENS_ACAO.investigacao);
             renderizarMesa();
         }
 
@@ -495,6 +647,9 @@
                 return;
             }
 
+            jogadaPendenteMesa = null;
+            fecharPalco(false);
+
             vivos.forEach(j => {
                 j.fotoVerso = escolherFundoAleatorio();
                 j.virada = false;
@@ -502,7 +657,6 @@
 
             sortearPapeis();
             rodadaAtual++;
-            mostrarCartinhaAcao(IMAGENS_ACAO.investigacao);
             renderizarMesa();
         }
 
@@ -516,7 +670,6 @@
         function rolarDado() {
             const display = document.getElementById('resultado-dado');
             let giros = 0;
-
             const intervalo = setInterval(() => {
                 display.innerText = Math.floor(Math.random() * 20) + 1;
                 giros++;
@@ -529,59 +682,182 @@
             }, 50);
         }
 
-        function registrarAcao() {
-            const numOrigem = parseInt(document.getElementById('jogador-origem').value, 10);
-            const tipoAcao = document.getElementById('tipo-acao').value;
-            const numAlvo = parseInt(document.getElementById('jogador-alvo').value, 10);
+        function normalizarAcao(textoAcao) {
+            const limpo = textoAcao
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .trim();
 
-            const ator = jogadores.find(j => j.numero === numOrigem && j.vivo);
-            const alvo = jogadores.find(j => j.numero === numAlvo && j.vivo);
+            if (limpo.startsWith('defes') || limpo.startsWith('proteg')) return 'defesa';
+            if (limpo.startsWith('ataqu')) return 'ataque';
+            if (limpo.startsWith('denunc') || limpo.startsWith('investig')) return 'denuncia';
+            return null;
+        }
+
+        function interpretarComando(textoBruto) {
+            // Aceita formatos como "8>16 defesa", "8 > 16 defesa", "8-16 defesa"
+            const match = textoBruto.trim().match(/^(\d+)\s*(?:>|->|-)\s*(\d+)\s+(.+)$/);
+            if (!match) return null;
+
+            const origem = parseInt(match[1], 10);
+            const alvo = parseInt(match[2], 10);
+            const acao = normalizarAcao(match[3]);
+
+            if (!acao || Number.isNaN(origem) || Number.isNaN(alvo)) return null;
+            return { origem, alvo, acao, original: textoBruto.trim() };
+        }
+
+        function processarComandoLive() {
+            const input = document.getElementById('input-comando-live');
+            const texto = input ? input.value : '';
+            const parsed = interpretarComando(texto);
+
+            if (!parsed) {
+                alert('Use o formato: 8>16 defesa, 8>14 ataque ou 8>10 denuncia');
+                return;
+            }
+
+            const ator = jogadores.find(j => j.numero === parsed.origem && j.vivo);
+            const alvo = jogadores.find(j => j.numero === parsed.alvo && j.vivo);
 
             if (!ator || !alvo) {
                 alert('Número inválido ou participante já eliminado.');
                 return;
             }
 
-            if (ator.ultimaAcao === tipoAcao) {
-                alert(`O nº ${ator.numero} não pode repetir "${tipoAcao.toUpperCase()}" em rodadas seguidas.`);
+            if (ator.ultimaAcao === parsed.acao) {
+                alert(`O nº ${ator.numero} não pode repetir "${parsed.acao.toUpperCase()}" em rodadas seguidas.`);
                 return;
             }
 
-            ator.ultimaAcao = tipoAcao;
+            ator.ultimaAcao = parsed.acao;
 
-            if (tipoAcao === 'defesa') {
+            let imagemAcao = IMAGENS_ACAO.defesa;
+            let falaAcao = `O número ${alvo.numero} está sob minha proteção`;
+            let statusRetorno = `Ao voltar para a mesa, a carta #${alvo.numero} ficará VIRADA PARA BAIXO (protegida).`;
+
+            jogadaPendenteMesa = {
+                tipo: 'manter_baixo',
+                alvoNumero: alvo.numero
+            };
+
+            if (parsed.acao === 'defesa') {
                 alvo.protegido = true;
-                mostrarCartinhaAcao(IMAGENS_ACAO.defesa);
-                adicionarLog(`👮🏽‍♀️ Nº ${ator.numero} defendeu o nº ${alvo.numero}.`);
-            } else if (tipoAcao === 'ataque') {
+                imagemAcao = IMAGENS_ACAO.defesa;
+                falaAcao = `O número ${alvo.numero} está sob minha proteção`;
+                statusRetorno = `Ao voltar para a mesa, a carta #${alvo.numero} volta VIRADA PARA BAIXO sob defesa.`;
+                adicionarLog(`👮🏽‍♀️ [${parsed.original}] Nº ${ator.numero} defendeu o nº ${alvo.numero}.`);
+            } else if (parsed.acao === 'ataque') {
                 if (ator.papel !== 'Ladrão 🦹🏽‍♀️') {
-                    mostrarCartinhaAcao(IMAGENS_ACAO.ataque);
-                    adicionarLog(`⚔️ Nº ${ator.numero} fez ação de ataque no nº ${alvo.numero}.`);
+                    imagemAcao = IMAGENS_ACAO.ataque;
+                    falaAcao = `O número ${alvo.numero} sofreu ataque (sem eliminação do Ladrão)`;
+                    statusRetorno = `Ao voltar para a mesa, a carta #${alvo.numero} continua VIRADA PARA BAIXO.`;
+                    adicionarLog(`⚔️ [${parsed.original}] Nº ${ator.numero} atacou o nº ${alvo.numero}.`);
                 } else if (alvo.papel === 'Policial 👮🏽‍♀️') {
-                    mostrarCartinhaAcao(IMAGENS_ACAO.ataqueFalhou);
-                    adicionarLog(`🛡️ Ladrão (nº ${ator.numero}) tentou atacar o Policial (nº ${alvo.numero}), mas o Policial não é eliminado.`);
+                    imagemAcao = IMAGENS_ACAO.ataqueFalhou;
+                    falaAcao = `O número ${alvo.numero} é o Policial e o ataque falhou!`;
+                    statusRetorno = `Ao voltar para a mesa, a carta #${alvo.numero} volta VIRADA PARA BAIXO.`;
+                    adicionarLog(`🛡️ [${parsed.original}] Ladrão (#${ator.numero}) atacou o Policial (#${alvo.numero}) e falhou.`);
                 } else if (alvo.protegido) {
-                    mostrarCartinhaAcao(IMAGENS_ACAO.ataqueFalhou);
-                    adicionarLog(`🚨 Ladrão (nº ${ator.numero}) atacou o nº ${alvo.numero} protegido e foi pego!`);
-                    eliminarJogador(ator.numero);
+                    imagemAcao = IMAGENS_ACAO.ataqueFalhou;
+                    falaAcao = `O número ${alvo.numero} estava protegido! Ladrão #${ator.numero} foi pego!`;
+                    statusRetorno = `Ao voltar para a mesa, a carta #${alvo.numero} volta VIRADA PARA BAIXO e o Ladrão #${ator.numero} fica VIRADO PARA CIMA (eliminado).`;
+                    jogadaPendenteMesa = {
+                        tipo: 'eliminar',
+                        alvoNumero: ator.numero,
+                        manterAlvoBaixo: alvo.numero
+                    };
+                    adicionarLog(`🚨 [${parsed.original}] Ladrão (#${ator.numero}) atacou #${alvo.numero} protegido e foi preso!`);
                 } else {
-                    mostrarCartinhaAcao(IMAGENS_ACAO.biasSequestrado);
-                    adicionarLog(`💀 Ataque eliminou o nº ${alvo.numero}.`);
-                    eliminarJogador(alvo.numero);
+                    imagemAcao = IMAGENS_ACAO.biasSequestrado;
+                    falaAcao = `O número ${alvo.numero} não tinha defesa e foi eliminado!`;
+                    statusRetorno = `Ao voltar para a mesa, a carta #${alvo.numero} ficará VIRADA PARA CIMA (eliminada).`;
+                    jogadaPendenteMesa = {
+                        tipo: 'eliminar',
+                        alvoNumero: alvo.numero
+                    };
+                    adicionarLog(`💀 [${parsed.original}] Ataque eliminou o nº ${alvo.numero}.`);
                 }
-            } else if (tipoAcao === 'denuncia') {
+            } else if (parsed.acao === 'denuncia') {
                 if (alvo.papel === 'Ladrão 🦹🏽‍♀️') {
-                    mostrarCartinhaAcao(IMAGENS_ACAO.denunciaCerta);
-                    adicionarLog(`🎉 Nº ${ator.numero} denunciou o nº ${alvo.numero} e acertou: era o Ladrão!`);
-                    verificarFaseFinal(ator);
-                    eliminarJogador(alvo.numero);
+                    imagemAcao = IMAGENS_ACAO.denunciaCerta;
+                    falaAcao = `Denúncia certa! O número ${alvo.numero} era o Ladrão!`;
+                    statusRetorno = `Ao voltar para a mesa, a carta #${alvo.numero} ficará VIRADA PARA CIMA (eliminada).`;
+                    jogadaPendenteMesa = {
+                        tipo: 'eliminar',
+                        alvoNumero: alvo.numero,
+                        denunciante: ator
+                    };
+                    adicionarLog(`🎉 [${parsed.original}] Nº ${ator.numero} acertou a denúncia no nº ${alvo.numero}!`);
                 } else {
-                    mostrarCartinhaAcao(IMAGENS_ACAO.denuncia);
-                    adicionarLog(`👸🏽 Nº ${ator.numero} denunciou o nº ${alvo.numero}, mas não era o Ladrão.`);
+                    imagemAcao = IMAGENS_ACAO.denuncia;
+                    falaAcao = `Denúncia no número ${alvo.numero}: não era o Ladrão!`;
+                    statusRetorno = `Ao voltar para a mesa, a carta #${alvo.numero} continua VIRADA PARA BAIXO.`;
+                    adicionarLog(`👸🏽 [${parsed.original}] Nº ${ator.numero} denunciou o nº ${alvo.numero} (incorreto).`);
                 }
             }
 
-            renderizarMesa();
+            abrirPalco({
+                comando: parsed.original,
+                imagemAcao,
+                falaAcao,
+                alvo,
+                statusRetorno
+            });
+
+            if (input) input.value = '';
+        }
+
+        function abrirPalco({ comando, imagemAcao, falaAcao, alvo, statusRetorno }) {
+            const overlay = document.getElementById('palco-overlay');
+            const cmdEl = document.getElementById('palco-comando-texto');
+            const imgAcaoEl = document.getElementById('palco-img-acao');
+            const falaEl = document.getElementById('palco-fala-acao');
+            const imgBiasEl = document.getElementById('palco-img-bias');
+            const nomeBiasEl = document.getElementById('palco-nome-bias');
+            const statusEl = document.getElementById('palco-status-retorno');
+
+            cmdEl.innerText = comando;
+            imgAcaoEl.dataset.fallbackAplicado = 'false';
+            imgAcaoEl.src = imagemAcao;
+            falaEl.innerText = falaAcao;
+
+            imgBiasEl.dataset.fallbackAplicado = 'false';
+            imgBiasEl.src = alvo.fotoFrente;
+            nomeBiasEl.innerText = `Carta #${alvo.numero} • Foto ${alvo.fotoNum}`;
+            statusEl.innerText = statusRetorno;
+
+            overlay.classList.add('ativo');
+        }
+
+        function fecharPalco(aplicarEstadoMesa = true) {
+            const overlay = document.getElementById('palco-overlay');
+            overlay.classList.remove('ativo');
+
+            if (aplicarEstadoMesa && jogadaPendenteMesa) {
+                if (jogadaPendenteMesa.manterAlvoBaixo) {
+                    const protegidoCarta = jogadores.find(j => j.numero === jogadaPendenteMesa.manterAlvoBaixo);
+                    if (protegidoCarta && protegidoCarta.vivo) {
+                        protegidoCarta.virada = false;
+                    }
+                }
+
+                if (jogadaPendenteMesa.tipo === 'manter_baixo') {
+                    const cartaAlvo = jogadores.find(j => j.numero === jogadaPendenteMesa.alvoNumero);
+                    if (cartaAlvo && cartaAlvo.vivo) {
+                        cartaAlvo.virada = false;
+                    }
+                } else if (jogadaPendenteMesa.tipo === 'eliminar') {
+                    eliminarJogador(jogadaPendenteMesa.alvoNumero);
+                    if (jogadaPendenteMesa.denunciante) {
+                        verificarFaseFinal(jogadaPendenteMesa.denunciante);
+                    }
+                }
+
+                jogadaPendenteMesa = null;
+                renderizarMesa();
+            }
         }
 
         function eliminarJogador(numero) {
@@ -624,7 +900,7 @@
             if (imgElement.dataset.fallbackAplicado === 'true') return;
             imgElement.dataset.fallbackAplicado = 'true';
             imgElement.src = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
-                `<svg xmlns="http://www.w3.org/2000/svg" width="240" height="140"><rect width="100%" height="100%" fill="#1b1b29"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#a29bfe" font-family="sans-serif" font-size="14">Cartinha de Ação</text></svg>`
+                `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="360"><rect width="100%" height="100%" fill="#1e1e2e"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#a29bfe" font-family="sans-serif" font-size="16">Cartinha de Ação</text></svg>`
             )}`;
         }
 
@@ -632,7 +908,7 @@
             if (imgElement.dataset.fallbackAplicado === 'true') return;
             imgElement.dataset.fallbackAplicado = 'true';
             imgElement.src = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
-                `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="100%" height="100%" fill="#2d2d44"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#ffcc00" font-family="sans-serif" font-size="16">Carta #${numeroCarta}</text></svg>`
+                `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="360"><rect width="100%" height="100%" fill="#28283d"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#ffcc00" font-family="sans-serif" font-size="18">Carta #${numeroCarta}</text></svg>`
             )}`;
         }
 
@@ -663,7 +939,7 @@
                             <img src="${jogador.fotoFrente}" alt="Foto ${jogador.fotoNum}" onerror="tratarErroImagem(this, ${jogador.numero})">
                             <div class="info-carta">
                                 <strong>${jogador.vivo ? '🟢 Em jogo' : '🔴 Eliminado'}</strong><br>
-                                <small>Última: ${jogador.ultimaAcao ? jogador.ultimaAcao.toUpperCase() : 'Nenhuma'}</small>
+                                <small>${jogador.protegido ? '🛡️ Protegido' : 'Última: ' + (jogador.ultimaAcao ? jogador.ultimaAcao.toUpperCase() : 'Nenhuma')}</small>
                             </div>
                         </div>
                     </div>
