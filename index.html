@@ -173,6 +173,17 @@
             align-items: center;
         }
 
+        .badge-ordem-p {
+            background: #26263a;
+            color: #00cec9;
+            border: 1px solid #3f3f63;
+            border-radius: 6px;
+            padding: 5px 8px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
         .quadro-participante input.input-nome-jogador {
             flex: 1;
             padding: 6px 9px;
@@ -258,15 +269,16 @@
         }
 
         .dado-display {
-            font-size: 2.5rem;
+            font-size: 1.45rem;
             font-weight: bold;
             text-align: center;
             background: #12121a;
-            padding: 10px;
+            padding: 12px 10px;
             border-radius: 8px;
             margin-bottom: 10px;
             color: #00cec9;
             border: 2px dashed #00cec9;
+            line-height: 1.25;
         }
 
         .box-dado button {
@@ -685,9 +697,9 @@
             </div>
 
             <div class="box-dado">
-                <h2>🎲 Dado</h2>
+                <h2 id="titulo-dado">🎲 Sortear Participante (1 a 1)</h2>
                 <div id="resultado-dado" class="dado-display">-</div>
-                <button onclick="rolarDado()">Rolar Dado (1 a 20)</button>
+                <button id="btn-rolar-dado" onclick="rolarDado()">Sortear Participante</button>
             </div>
 
             <div class="box-log">
@@ -795,20 +807,24 @@
             return valor;
         }
 
-        function atualizarReferenciaQuantidade() {
-            const el = document.getElementById('referencia-qtd');
-            if (!el) return;
+        function atualizarControlesParticipantes() {
+            const totalP = participantes.length;
+            const elRef = document.getElementById('referencia-qtd');
+            const tituloDado = document.getElementById('titulo-dado');
 
-            const chave = document.getElementById('pacote-fotos')?.value || 'atores-asiaticos';
-            const pacote = PACOTES[chave] || PACOTES['atores-asiaticos'];
-            const qtdP = participantes.length;
-            const dobro = qtdP * 2;
-            const simples = qtdP;
+            if (tituloDado) {
+                tituloDado.innerText = `🎲 Sortear Participante (1 a ${totalP})`;
+            }
 
-            if (dobro <= pacote.totalDisponivel) {
-                el.innerText = `${qtdP} participante(s) • 2 por pessoa = ${dobro} cartas (ou 1 por pessoa = ${simples} cartas)`;
-            } else {
-                el.innerText = `${qtdP} participante(s) • 1 por pessoa = ${simples} cartas (limite do grupo: ${pacote.totalDisponivel})`;
+            if (elRef) {
+                const chave = document.getElementById('pacote-fotos')?.value || 'atores-asiaticos';
+                const pacote = PACOTES[chave] || PACOTES['atores-asiaticos'];
+                const dobro = totalP * 2;
+                if (dobro <= pacote.totalDisponivel) {
+                    elRef.innerText = `${totalP} participante(s) • 2 por pessoa = ${dobro} cartas (ou 1 por pessoa = ${totalP} cartas)`;
+                } else {
+                    elRef.innerText = `${totalP} participante(s) • 1 por pessoa = ${totalP} cartas (limite do grupo: ${pacote.totalDisponivel})`;
+                }
             }
         }
 
@@ -911,7 +927,7 @@
             criarBaralho();
             embaralharApenasPapeis();
             rodadaAtual = 1;
-            atualizarReferenciaQuantidade();
+            atualizarControlesParticipantes();
             renderizarParticipantes();
             renderizarMesa();
         }
@@ -966,7 +982,7 @@
                 usadasNaRodada: { ataque: false, defesa: false, denuncia: false }
             });
             if (input) input.value = '';
-            atualizarReferenciaQuantidade();
+            atualizarControlesParticipantes();
             renderizarParticipantes();
             renderizarMesa();
         }
@@ -977,7 +993,7 @@
                 return;
             }
             participantes = participantes.filter(p => p.id !== id);
-            atualizarReferenciaQuantidade();
+            atualizarControlesParticipantes();
             renderizarParticipantes();
             renderizarMesa();
         }
@@ -1050,12 +1066,13 @@
             if (!wrap) return;
             wrap.innerHTML = '';
 
-            participantes.forEach(p => {
+            participantes.forEach((p, idx) => {
                 const div = document.createElement('div');
                 div.className = 'quadro-participante';
 
                 div.innerHTML = `
                     <div class="linha-topo-participante">
+                        <span class="badge-ordem-p">#${idx + 1}</span>
                         <input
                             type="text"
                             class="input-nome-jogador"
@@ -1394,18 +1411,29 @@
         }
 
         function rolarDado() {
+            const total = participantes.length;
+            if (total < 1) return;
+
             const display = document.getElementById('resultado-dado');
+            const btn = document.getElementById('btn-rolar-dado');
+            if (btn) btn.disabled = true;
+
             let giros = 0;
             const intervalo = setInterval(() => {
-                display.innerText = Math.floor(Math.random() * 20) + 1;
+                const idxTemp = Math.floor(Math.random() * total);
+                const pTemp = participantes[idxTemp];
+                display.innerText = `#${idxTemp + 1} • ${pTemp.nome}`;
                 giros++;
                 if (giros > 10) {
                     clearInterval(intervalo);
-                    const numeroFinal = Math.floor(Math.random() * 20) + 1;
-                    display.innerText = numeroFinal;
-                    adicionarLog(`🎲 Dado: ${numeroFinal}`);
+                    const idxFinal = Math.floor(Math.random() * total);
+                    const pFinal = participantes[idxFinal];
+                    const posFinal = idxFinal + 1;
+                    display.innerText = `#${posFinal} • ${pFinal.nome}`;
+                    if (btn) btn.disabled = false;
+                    adicionarLog(`🎲 Sorteado: #${posFinal} (${pFinal.nome}) de 1 a ${total}.`);
                 }
-            }, 50);
+            }, 55);
         }
 
         function adicionarLog(mensagem) {
