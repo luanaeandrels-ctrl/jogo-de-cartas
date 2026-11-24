@@ -205,7 +205,7 @@
         .linha-cartas-escolhidas {
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 4px;
         }
 
         .linha-cartas-escolhidas label {
@@ -213,8 +213,14 @@
             color: #b8b8dc;
         }
 
+        .linha-input-ok {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
         .quadro-participante input.input-cartas-jogador {
-            width: 100%;
+            flex: 1;
             padding: 6px 9px;
             border-radius: 7px;
             border: 1px solid #45456b;
@@ -222,6 +228,43 @@
             color: #00cec9;
             font-size: 0.82rem;
             font-weight: 700;
+        }
+
+        .btn-ok-cartas {
+            background-color: #00b894;
+            padding: 6px 10px;
+            font-size: 0.78rem;
+            white-space: nowrap;
+        }
+
+        .btn-ok-cartas:hover {
+            background-color: #00997a;
+        }
+
+        .caixa-cartas-salvas {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            background: #102424;
+            border: 1px solid #00b894;
+            border-radius: 7px;
+            padding: 6px 9px;
+        }
+
+        .texto-cartas-salvas {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #55efc4;
+            word-break: break-word;
+        }
+
+        .btn-editar-cartas {
+            background-color: #2d2d44;
+            color: #ffd166;
+            padding: 4px 8px;
+            font-size: 0.74rem;
+            flex-shrink: 0;
         }
 
         .status-vitoria-jogador {
@@ -784,6 +827,8 @@
                 id: 1,
                 nome: 'Participante 1',
                 cartasEscolhidas: [],
+                textoCartasRascunho: '',
+                cartasConfirmadas: false,
                 blocoAcoes: '',
                 usadasNaRodada: { ataque: false, defesa: false, denuncia: false }
             }
@@ -978,6 +1023,8 @@
                 id: proximoIdParticipante++,
                 nome,
                 cartasEscolhidas: [],
+                textoCartasRascunho: '',
+                cartasConfirmadas: false,
                 blocoAcoes: '',
                 usadasNaRodada: { ataque: false, defesa: false, denuncia: false }
             });
@@ -1006,16 +1053,64 @@
             renderizarMesa();
         }
 
-        function atualizarCartasEscolhidas(id, textoNumeros) {
+        function parsearListaCartas(textoNumeros) {
+            const nums = [];
+            const limpo = (textoNumeros || '').trim();
+            if (!limpo) return nums;
+
+            const pedacos = limpo.split(/[,;\s]+/).filter(Boolean);
+            for (const parte of pedacos) {
+                const faixa = parte.match(/^(\d+)\s*-\s*(\d+)$/);
+                if (faixa) {
+                    const inicio = parseInt(faixa[1], 10);
+                    const fim = parseInt(faixa[2], 10);
+                    const passo = inicio <= fim ? 1 : -1;
+                    for (let n = inicio; passo > 0 ? n <= fim : n >= fim; n += passo) {
+                        if (n >= 1 && n <= jogadores.length) {
+                            nums.push(n);
+                        }
+                    }
+                } else {
+                    const n = parseInt(parte.replace(/[^0-9]/g, ''), 10);
+                    if (!Number.isNaN(n) && n >= 1 && n <= jogadores.length) {
+                        nums.push(n);
+                    }
+                }
+            }
+            return [...new Set(nums)];
+        }
+
+        function atualizarRascunhoCartas(id, textoNumeros) {
             const p = participantes.find(item => item.id === id);
             if (!p) return;
-            const nums = textoNumeros
-                .split(/[^0-9]+/)
-                .map(n => parseInt(n, 10))
-                .filter(n => !Number.isNaN(n) && n >= 1 && n <= jogadores.length);
-            p.cartasEscolhidas = [...new Set(nums)];
+            p.textoCartasRascunho = textoNumeros;
+        }
+
+        function confirmarCartasParticipante(id, textoDireto = null) {
+            const p = participantes.find(item => item.id === id);
+            if (!p) return;
+
+            const fonte = textoDireto !== null ? textoDireto : p.textoCartasRascunho;
+            const nums = parsearListaCartas(fonte);
+
+            p.cartasEscolhidas = nums;
+            p.textoCartasRascunho = nums.join(', ');
+            p.cartasConfirmadas = nums.length > 0;
+
             renderizarParticipantes();
             renderizarMesa();
+
+            if (nums.length > 0) {
+                mostrarBalao(`${p.nome}: cartas ${nums.join(', ')} salvas.`, 'sucesso');
+            }
+        }
+
+        function editarCartasParticipante(id) {
+            const p = participantes.find(item => item.id === id);
+            if (!p) return;
+            p.cartasConfirmadas = false;
+            p.textoCartasRascunho = p.cartasEscolhidas.join(', ');
+            renderizarParticipantes();
         }
 
         function atualizarBlocoAcao(id, valor) {
@@ -1035,7 +1130,7 @@
             rodadaAtual++;
             renderizarParticipantes();
             renderizarMesa();
-            mostrarBalao(`Rodada ${rodadaAtual} limpa.`, 'sucesso');
+            mostrarBalao(`Rodada ${rodadaAtual} limpa (números salvos mantidos).`, 'sucesso');
         }
 
         function obterDonosDaCarta(numeroCarta) {
@@ -1046,7 +1141,7 @@
 
         function obterStatusCartasJogador(p) {
             if (!p.cartasEscolhidas.length) {
-                return 'Escolha os números das cartas (ex: 2, 10, 18).';
+                return 'Sem números salvos ainda (ex: 1, 2, 3, 4, 5 ou 1-5).';
             }
             const detalhes = p.cartasEscolhidas.map(num => {
                 const carta = jogadores.find(j => j.numero === num);
@@ -1070,6 +1165,28 @@
                 const div = document.createElement('div');
                 div.className = 'quadro-participante';
 
+                const blocoCartasHtml = p.cartasConfirmadas
+                    ? `
+                        <div class="caixa-cartas-salvas">
+                            <span class="texto-cartas-salvas">✅ Cartas: ${p.cartasEscolhidas.join(', ')}</span>
+                            <button type="button" class="btn-editar-cartas" onclick="editarCartasParticipante(${p.id})">✏️ Editar</button>
+                        </div>
+                    `
+                    : `
+                        <div class="linha-input-ok">
+                            <input
+                                type="text"
+                                class="input-cartas-jogador"
+                                value="${p.textoCartasRascunho !== undefined ? p.textoCartasRascunho : p.cartasEscolhidas.join(', ')}"
+                                placeholder="Ex: 1-5 ou 1, 2, 3, 4, 5"
+                                oninput="atualizarRascunhoCartas(${p.id}, this.value)"
+                                onchange="confirmarCartasParticipante(${p.id}, this.value)"
+                                onkeydown="if(event.key === 'Enter'){ event.preventDefault(); confirmarCartasParticipante(${p.id}, this.value); }"
+                            >
+                            <button type="button" class="btn-ok-cartas" onclick="confirmarCartasParticipante(${p.id})">✅ OK</button>
+                        </div>
+                    `;
+
                 div.innerHTML = `
                     <div class="linha-topo-participante">
                         <span class="badge-ordem-p">#${idx + 1}</span>
@@ -1080,17 +1197,11 @@
                             placeholder="Nome ou @"
                             onchange="atualizarNomeParticipante(${p.id}, this.value)"
                         >
-                        <button class="btn-remover-p" onclick="removerParticipante(${p.id})" title="Remover">✕</button>
+                        <button type="button" class="btn-remover-p" onclick="removerParticipante(${p.id})" title="Remover">✕</button>
                     </div>
                     <div class="linha-cartas-escolhidas">
-                        <label>Números escolhidos:</label>
-                        <input
-                            type="text"
-                            class="input-cartas-jogador"
-                            value="${p.cartasEscolhidas.join(', ')}"
-                            placeholder="Ex: 2, 10, 18"
-                            onchange="atualizarCartasEscolhidas(${p.id}, this.value)"
-                        >
+                        <label>Cartas do jogador:</label>
+                        ${blocoCartasHtml}
                     </div>
                     <div class="status-vitoria-jogador">${obterStatusCartasJogador(p)}</div>
                     <textarea
