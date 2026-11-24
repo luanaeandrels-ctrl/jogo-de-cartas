@@ -117,7 +117,7 @@
         .barra-add-participante {
             display: flex;
             gap: 6px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .barra-add-participante input {
@@ -133,9 +133,19 @@
 
         .btn-add {
             background-color: #0984e3;
-            padding: 8px 11px;
-            font-size: 0.84rem;
+            padding: 8px 12px;
+            font-size: 0.86rem;
             white-space: nowrap;
+        }
+
+        .referencia-qtd {
+            font-size: 0.78rem;
+            color: #ffd166;
+            background: #14141f;
+            border: 1px solid #2f2f48;
+            border-radius: 8px;
+            padding: 7px 10px;
+            margin-bottom: 10px;
         }
 
         .grade-participantes {
@@ -211,7 +221,7 @@
 
         .quadro-participante textarea.bloco-acoes-jogador {
             width: 100%;
-            min-height: 62px;
+            min-height: 60px;
             resize: vertical;
             padding: 8px 9px;
             border-radius: 7px;
@@ -228,17 +238,10 @@
             border-color: #00cec9;
         }
 
-        .btn-dividir {
-            background-color: #5649c0;
-            width: 100%;
-            margin-top: 10px;
-            font-size: 0.86rem;
-        }
-
         .btn-play {
             background-color: #00b894;
             width: 100%;
-            margin-top: 8px;
+            margin-top: 10px;
             padding: 12px;
             font-size: 1rem;
         }
@@ -662,21 +665,21 @@
     <main class="container-principal">
         <aside class="painel-controle">
             <div class="box-participantes">
-                <h2>👥 Participantes &amp; Bloco de Ações</h2>
+                <h2>👥 Participantes</h2>
 
                 <div class="barra-add-participante">
                     <input
                         type="text"
                         id="input-novo-participante"
-                        placeholder="Nome ou @ do novo jogador"
+                        placeholder="Nome ou @ do participante"
                         onkeydown="if(event.key === 'Enter') adicionarParticipante()"
                     >
                     <button class="btn-add" onclick="adicionarParticipante()">+ Add</button>
                 </div>
 
+                <div id="referencia-qtd" class="referencia-qtd"></div>
                 <div id="grade-participantes" class="grade-participantes"></div>
 
-                <button class="btn-dividir" onclick="dividirCartasAutomaticamente()">🧮 Dividir Cartas (Sem Fazer Conta)</button>
                 <button class="btn-play" onclick="executarPlayRodada()">▶️ Play</button>
                 <button class="btn-limpar-acoes" onclick="limparAcoesDaRodada()">🧹 Limpar Ações da Rodada</button>
             </div>
@@ -763,12 +766,15 @@
         };
 
         let jogadores = [];
-        let proximoIdParticipante = 5;
+        let proximoIdParticipante = 2;
         let participantes = [
-            { id: 1, nome: 'Participante 1', cartasEscolhidas: [1, 2], blocoAcoes: '', usadasNaRodada: { ataque: false, defesa: false, denuncia: false } },
-            { id: 2, nome: 'Participante 2', cartasEscolhidas: [3, 4], blocoAcoes: '', usadasNaRodada: { ataque: false, defesa: false, denuncia: false } },
-            { id: 3, nome: 'Participante 3', cartasEscolhidas: [5, 6], blocoAcoes: '', usadasNaRodada: { ataque: false, defesa: false, denuncia: false } },
-            { id: 4, nome: 'Participante 4', cartasEscolhidas: [7, 8], blocoAcoes: '', usadasNaRodada: { ataque: false, defesa: false, denuncia: false } }
+            {
+                id: 1,
+                nome: 'Participante 1',
+                cartasEscolhidas: [],
+                blocoAcoes: '',
+                usadasNaRodada: { ataque: false, defesa: false, denuncia: false }
+            }
         ];
         let mostrarTarja = false;
         let todasAbertas = false;
@@ -787,6 +793,23 @@
                 input.value = valor;
             }
             return valor;
+        }
+
+        function atualizarReferenciaQuantidade() {
+            const el = document.getElementById('referencia-qtd');
+            if (!el) return;
+
+            const chave = document.getElementById('pacote-fotos')?.value || 'atores-asiaticos';
+            const pacote = PACOTES[chave] || PACOTES['atores-asiaticos'];
+            const qtdP = participantes.length;
+            const dobro = qtdP * 2;
+            const simples = qtdP;
+
+            if (dobro <= pacote.totalDisponivel) {
+                el.innerText = `${qtdP} participante(s) • 2 por pessoa = ${dobro} cartas (ou 1 por pessoa = ${simples} cartas)`;
+            } else {
+                el.innerText = `${qtdP} participante(s) • 1 por pessoa = ${simples} cartas (limite do grupo: ${pacote.totalDisponivel})`;
+            }
         }
 
         function obterClasseTracinho(papel) {
@@ -836,7 +859,7 @@
             return FUNDOS_VERSO[indice];
         }
 
-        function criarBaralhoSemAleatoriedade() {
+        function criarBaralho() {
             const chave = document.getElementById('pacote-fotos')?.value || 'atores-asiaticos';
             const pacote = PACOTES[chave] || PACOTES['atores-asiaticos'];
             const quantidadeCartas = obterQuantidadeCartas();
@@ -876,8 +899,8 @@
                 vivos[indices[1]].papel = 'Policial 👮🏽‍♀️';
             }
 
-            adicionarLog(`🔀 Papéis sorteados entre ${vivos.length} cartas ativas (números e escolhas mantidos).`);
-            mostrarBalao('Papéis sorteados! Cartas viradas para baixo para a rodada.', 'sucesso');
+            adicionarLog(`🔀 Papéis sorteados entre ${vivos.length} cartas.`);
+            mostrarBalao('Papéis sorteados.', 'sucesso');
             renderizarParticipantes();
             renderizarMesa();
         }
@@ -885,9 +908,10 @@
         function iniciarJogo() {
             jogadaPendenteMesa = null;
             fecharPalco(false);
-            criarBaralhoSemAleatoriedade();
+            criarBaralho();
             embaralharApenasPapeis();
             rodadaAtual = 1;
+            atualizarReferenciaQuantidade();
             renderizarParticipantes();
             renderizarMesa();
         }
@@ -899,27 +923,17 @@
                 j.virada = todasAbertas;
             });
             renderizarMesa();
-            mostrarBalao(
-                todasAbertas
-                    ? 'Cartas abertas para escolha (sem tarja de papel).'
-                    : 'Cartas fechadas para a rodada.',
-                'sucesso'
-            );
         }
 
         function toggleTarjaPapeis() {
             mostrarTarja = !mostrarTarja;
             renderizarMesa();
-            mostrarBalao(
-                mostrarTarja ? 'Tarja de papéis revelada na mesa.' : 'Tarja de papéis escondida.',
-                'sucesso'
-            );
         }
 
         function recomecarComSobreviventes() {
             const vivos = jogadores.filter(j => j.vivo);
             if (vivos.length <= 3) {
-                mostrarBalao('Fim de jogo! Restam 3 ou menos participantes na mesa.', 'erro');
+                mostrarBalao('Fim de jogo! Restam 3 ou menos cartas.', 'erro');
                 return;
             }
 
@@ -944,26 +958,26 @@
         function adicionarParticipante() {
             const input = document.getElementById('input-novo-participante');
             const nome = (input?.value || '').trim() || `Participante ${proximoIdParticipante}`;
-            const novo = {
+            participantes.push({
                 id: proximoIdParticipante++,
                 nome,
                 cartasEscolhidas: [],
                 blocoAcoes: '',
                 usadasNaRodada: { ataque: false, defesa: false, denuncia: false }
-            };
-            participantes.push(novo);
+            });
             if (input) input.value = '';
+            atualizarReferenciaQuantidade();
             renderizarParticipantes();
             renderizarMesa();
-            mostrarBalao(`${nome} adicionado! Agora escolha os números das cartas dele.`, 'sucesso');
         }
 
         function removerParticipante(id) {
             if (participantes.length <= 1) {
-                mostrarBalao('Precisa ter pelo menos 1 participante na mesa.', 'erro');
+                mostrarBalao('É necessário manter pelo menos 1 participante.', 'erro');
                 return;
             }
             participantes = participantes.filter(p => p.id !== id);
+            atualizarReferenciaQuantidade();
             renderizarParticipantes();
             renderizarMesa();
         }
@@ -988,36 +1002,6 @@
             renderizarMesa();
         }
 
-        function dividirCartasAutomaticamente() {
-            if (participantes.length === 0) return;
-            const vivos = jogadores.filter(j => j.vivo);
-            const porJogador = Math.floor(vivos.length / participantes.length);
-
-            participantes.forEach(p => {
-                p.cartasEscolhidas = [];
-            });
-
-            if (porJogador >= 1) {
-                let cursor = 0;
-                participantes.forEach(p => {
-                    for (let k = 0; k < porJogador && cursor < vivos.length; k++) {
-                        p.cartasEscolhidas.push(vivos[cursor].numero);
-                        cursor++;
-                    }
-                });
-                mostrarBalao(`Divisão automática: ${porJogador} carta(s) por participante (sem fazer conta).`, 'sucesso');
-            } else {
-                vivos.forEach((carta, idx) => {
-                    const dono = participantes[idx % participantes.length];
-                    dono.cartasEscolhidas.push(carta.numero);
-                });
-                mostrarBalao('Cartas distribuídas de forma equilibrada entre os participantes.', 'sucesso');
-            }
-
-            renderizarParticipantes();
-            renderizarMesa();
-        }
-
         function atualizarBlocoAcao(id, valor) {
             const p = participantes.find(item => item.id === id);
             if (!p) return;
@@ -1035,7 +1019,7 @@
             rodadaAtual++;
             renderizarParticipantes();
             renderizarMesa();
-            mostrarBalao(`Rodada ${rodadaAtual} pronta! Cole o bloco de ações de cada participante.`, 'sucesso');
+            mostrarBalao(`Rodada ${rodadaAtual} limpa.`, 'sucesso');
         }
 
         function obterDonosDaCarta(numeroCarta) {
@@ -1046,7 +1030,7 @@
 
         function obterStatusCartasJogador(p) {
             if (!p.cartasEscolhidas.length) {
-                return 'Nenhuma carta escolhida ainda (digite os números, ex: 8, 24).';
+                return 'Escolha os números das cartas (ex: 2, 10, 18).';
             }
             const detalhes = p.cartasEscolhidas.map(num => {
                 const carta = jogadores.find(j => j.numero === num);
@@ -1076,25 +1060,25 @@
                             type="text"
                             class="input-nome-jogador"
                             value="${p.nome}"
-                            placeholder="Nome ou @ do participante"
+                            placeholder="Nome ou @"
                             onchange="atualizarNomeParticipante(${p.id}, this.value)"
                         >
                         <button class="btn-remover-p" onclick="removerParticipante(${p.id})" title="Remover">✕</button>
                     </div>
                     <div class="linha-cartas-escolhidas">
-                        <label>Cartas escolhidas (números separados por vírgula):</label>
+                        <label>Números escolhidos:</label>
                         <input
                             type="text"
                             class="input-cartas-jogador"
                             value="${p.cartasEscolhidas.join(', ')}"
-                            placeholder="Ex: 8, 24"
+                            placeholder="Ex: 2, 10, 18"
                             onchange="atualizarCartasEscolhidas(${p.id}, this.value)"
                         >
                     </div>
                     <div class="status-vitoria-jogador">${obterStatusCartasJogador(p)}</div>
                     <textarea
                         class="bloco-acoes-jogador"
-                        placeholder="Cole tudo junto (vírgula ou espaço): ex: 8 > 12 ataque, 6 > 13 defesa, 2 > 10 denuncia"
+                        placeholder="Ex: 8 > 12 ataque, 6 > 13 defesa, 2 > 10 denuncia"
                         oninput="atualizarBlocoAcao(${p.id}, this.value)"
                     >${p.blocoAcoes || ''}</textarea>
                 `;
@@ -1164,7 +1148,7 @@
             for (const p of participantes) {
                 const { comandos, invalido } = extrairComandosDoBloco(p.blocoAcoes);
                 if (invalido) {
-                    mostrarBalao(`Em "${p.nome}", não entendi: "${invalido}". Use ex: 8 > 12 ataque, 6 > 13 defesa`, 'erro');
+                    mostrarBalao(`Em "${p.nome}", não entendi: "${invalido}".`, 'erro');
                     return;
                 }
 
@@ -1193,7 +1177,7 @@
             }
 
             if (comandosParaRodar.length === 0) {
-                mostrarBalao('Cole o bloco de ações de pelo menos um participante antes de clicar em Play.', 'erro');
+                mostrarBalao('Cole pelo menos uma ação antes de clicar em Play.', 'erro');
                 return;
             }
 
@@ -1387,7 +1371,7 @@
                 const vencedores = participantes
                     .filter(p => p.cartasEscolhidas.some(num => vivos.some(v => v.numero === num)))
                     .map(p => p.nome);
-                adicionarLog(`🏆 Fim de jogo! Cartas restantes: ${vivos.map(v => '#' + v.numero).join(', ')} | Na disputa: ${vencedores.join(', ') || '-'}`);
+                adicionarLog(`🏆 Fim de jogo! Cartas restantes: ${vivos.map(v => '#' + v.numero).join(', ')} | Vencedores: ${vencedores.join(', ') || '-'}`);
             }
         }
 
