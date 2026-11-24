@@ -88,7 +88,7 @@
 
         .container-principal {
             display: grid;
-            grid-template-columns: 320px 1fr;
+            grid-template-columns: 345px 1fr;
             gap: 18px;
             align-items: start;
         }
@@ -99,8 +99,7 @@
             gap: 14px;
         }
 
-        .box-comando,
-        .box-jogadores,
+        .box-participantes,
         .box-dado,
         .box-log {
             background-color: rgba(26, 26, 38, 0.92);
@@ -115,72 +114,141 @@
             color: #a29bfe;
         }
 
-        .campo-cola-codigo {
+        .barra-add-participante {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .barra-add-participante input {
+            flex: 1;
+            padding: 8px 10px;
+            border-radius: 7px;
+            border: 1px solid #55557a;
+            background-color: #14141f;
+            color: #ffffff;
+            font-size: 0.86rem;
+            font-weight: 600;
+        }
+
+        .btn-add {
+            background-color: #0984e3;
+            padding: 8px 11px;
+            font-size: 0.84rem;
+            white-space: nowrap;
+        }
+
+        .grade-participantes {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
+            max-height: 460px;
+            overflow-y: auto;
+            padding-right: 4px;
         }
 
-        .campo-cola-codigo input,
-        .box-jogadores input[type="text"] {
-            width: 100%;
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: 2px solid #6c5ce7;
-            background-color: #12121a;
+        .quadro-participante {
+            background: #14141f;
+            border: 1px solid #353552;
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .linha-topo-participante {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .quadro-participante input.input-nome-jogador {
+            flex: 1;
+            padding: 6px 9px;
+            border-radius: 7px;
+            border: 1px solid #55557a;
+            background-color: #1e1e2e;
             color: #ffcc00;
-            font-size: 0.95rem;
-            font-weight: bold;
+            font-size: 0.86rem;
+            font-weight: 700;
         }
 
-        .box-jogadores input[type="text"] {
-            border-color: #444466;
+        .btn-remover-p {
+            background-color: #3a232b;
+            color: #ff7675;
+            padding: 6px 8px;
+            font-size: 0.76rem;
+        }
+
+        .linha-cartas-escolhidas {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .linha-cartas-escolhidas label {
+            font-size: 0.72rem;
+            color: #b8b8dc;
+        }
+
+        .quadro-participante input.input-cartas-jogador {
+            width: 100%;
+            padding: 6px 9px;
+            border-radius: 7px;
+            border: 1px solid #45456b;
+            background-color: #181826;
+            color: #00cec9;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .status-vitoria-jogador {
+            font-size: 0.74rem;
+            color: #dfe6e9;
+            line-height: 1.25;
+        }
+
+        .quadro-participante input.input-acao-slot {
+            width: 100%;
+            padding: 6px 9px;
+            border-radius: 7px;
+            border: 1px solid #34344e;
+            background-color: #0e0e16;
             color: #ffffff;
-            margin-bottom: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
         }
 
-        .dica-comando {
-            font-size: 0.78rem;
-            color: #b8b8d4;
-            line-height: 1.35;
+        .quadro-participante input.input-acao-slot:focus {
+            outline: none;
+            border-color: #00cec9;
         }
 
-        .btn-confirmar {
+        .btn-dividir {
+            background-color: #5649c0;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 0.86rem;
+        }
+
+        .btn-play {
             background-color: #00b894;
             width: 100%;
+            margin-top: 8px;
+            padding: 12px;
+            font-size: 1rem;
         }
 
-        .btn-confirmar:hover {
+        .btn-play:hover {
             background-color: #00997a;
         }
 
-        .btn-secundario {
-            background-color: #5649c0;
+        .btn-limpar-acoes {
+            background-color: #2d2d44;
             width: 100%;
-            margin-top: 4px;
-        }
-
-        .resumo-donos {
-            margin-top: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            font-size: 0.8rem;
-        }
-
-        .dono-chip {
-            background: #14141f;
-            border: 1px solid #2f2f46;
-            border-radius: 8px;
-            padding: 7px 9px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .dono-chip strong {
-            color: #ffcc00;
+            margin-top: 6px;
+            font-size: 0.82rem;
         }
 
         .dado-display {
@@ -312,6 +380,7 @@
             text-overflow: ellipsis;
         }
 
+        /* Tarja / tracinho de papel só aparece quando a tarja está ligada */
         .tracinho-papel {
             position: absolute;
             top: 10px;
@@ -339,7 +408,7 @@
             border: 1px solid #ffb8b8;
         }
 
-        .carta-container.revelar .tracinho-papel {
+        .carta-container.mostrar-tarja .tracinho-papel {
             display: block;
         }
 
@@ -456,7 +525,7 @@
             display: inline-block;
             background: #ffffff;
             color: #111118;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 900;
             padding: 7px 22px;
             border-radius: 12px;
@@ -506,7 +575,6 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
         }
 
-        /* Identificação da carta no topo da foto para não tampar o nome embaixo */
         .etiqueta-bias {
             position: absolute;
             top: 10px;
@@ -580,43 +648,34 @@
             </select>
 
             <label for="qtd-cartas" class="label-inline">Cartas:</label>
-            <input type="number" id="qtd-cartas" min="4" max="24" value="24" onchange="iniciarJogo()">
+            <input type="number" id="qtd-cartas" min="4" max="37" value="24" onchange="iniciarJogo()">
 
-            <button onclick="iniciarJogo()">🎲 Sortear Cartas e Papéis</button>
-            <button onclick="recomecarComSobreviventes()">🔄 Novo Sorteio (Sobreviventes)</button>
-            <button onclick="toggleRevelarPapeis()">👁️ Ver / Esconder Papéis</button>
+            <button onclick="abrirOuFecharTodasCartas()">🃏 Abrir / Fechar Cartas</button>
+            <button onclick="embaralharApenasPapeis()">🔀 Embaralhar Papéis</button>
+            <button onclick="toggleTarjaPapeis()">🕵️ Tarja de Papéis</button>
+            <button onclick="recomecarComSobreviventes()">🔄 Sobreviventes</button>
         </div>
     </header>
 
     <main class="container-principal">
         <aside class="painel-controle">
-            <div class="box-comando">
-                <h2>📋 Colar Código da Live</h2>
-                <div class="campo-cola-codigo">
+            <div class="box-participantes">
+                <h2>👥 Participantes &amp; Cartas Escolhidas</h2>
+                <div class="barra-add-participante">
                     <input
                         type="text"
-                        id="input-comando-live"
-                        placeholder="Ex: 8 > 14 ataque"
-                        onkeydown="if(event.key === 'Enter') processarComandoLive()"
+                        id="input-novo-participante"
+                        placeholder="Nome ou @ do novo jogador"
+                        onkeydown="if(event.key === 'Enter') adicionarParticipante()"
                     >
-                    <div class="dica-comando">
-                        Formato: <strong>8 &gt; 14 defesa</strong>, <strong>8 &gt; 14 ataque</strong> ou <strong>8 &gt; 14 denuncia</strong>. Cada participante tem <strong>3 ações</strong> por rodada (1 de cada).
-                    </div>
-                    <button class="btn-confirmar" onclick="processarComandoLive()">⚡ Mostrar na Tela</button>
+                    <button class="btn-add" onclick="adicionarParticipante()">+ Add</button>
                 </div>
-            </div>
 
-            <div class="box-jogadores">
-                <h2>👥 Donos das Cartas (3 Ações/Rodada)</h2>
-                <input
-                    type="text"
-                    id="input-nomes-jogadores"
-                    value="Camila, Caroláine, André, Mirian"
-                    placeholder="Ex: Camila, Caroláine, André, Mirian"
-                >
-                <button class="btn-secundario" onclick="distribuirCartasParaJogadores()">🔀 Dividir Cartas Automaticamente</button>
-                <button class="btn-confirmar" style="margin-top:6px;" onclick="novaRodadaTresAcoes()">♻️ Resetar 3 Ações da Rodada</button>
-                <div id="resumo-donos" class="resumo-donos"></div>
+                <div id="grade-participantes" class="grade-participantes"></div>
+
+                <button class="btn-dividir" onclick="dividirCartasAutomaticamente()">🧮 Dividir Cartas (Sem Fazer Conta)</button>
+                <button class="btn-play" onclick="executarPlayRodada()">▶️ Play</button>
+                <button class="btn-limpar-acoes" onclick="limparAcoesDaRodada()">🧹 Limpar Ações da Rodada</button>
             </div>
 
             <div class="box-dado">
@@ -637,12 +696,12 @@
     <div id="palco-overlay" class="palco-overlay">
         <div class="palco-card">
             <div class="palco-topo-wrap">
-                <div id="palco-comando-texto" class="palco-comando-topo">8 &gt; 14 defesa</div>
+                <div id="palco-comando-texto" class="palco-comando-topo">Ação Principal da Rodada</div>
             </div>
 
             <div class="palco-grade-dupla">
                 <div class="quadro-palco">
-                    <div id="palco-fala-acao" class="frase-topo-acao">O número 14 está sob minha proteção</div>
+                    <div id="palco-fala-acao" class="frase-topo-acao">Essa carta está sob minha defesa</div>
                     <img id="palco-img-acao" src="defesa.png" alt="Cartinha de ação" onerror="tratarErroAcao(this)">
                 </div>
 
@@ -701,111 +760,30 @@
         };
 
         let jogadores = [];
-        let participantesMesa = [];
-        let modoMestre = false;
+        let proximoIdParticipante = 5;
+        let participantes = [
+            { id: 1, nome: 'Participante 1', cartasEscolhidas: [1, 2], acoes: ['', '', ''], usadasNaRodada: { ataque: false, defesa: false, denuncia: false } },
+            { id: 2, nome: 'Participante 2', cartasEscolhidas: [3, 4], acoes: ['', '', ''], usadasNaRodada: { ataque: false, defesa: false, denuncia: false } },
+            { id: 3, nome: 'Participante 3', cartasEscolhidas: [5, 6], acoes: ['', '', ''], usadasNaRodada: { ataque: false, defesa: false, denuncia: false } },
+            { id: 4, nome: 'Participante 4', cartasEscolhidas: [7, 8], acoes: ['', '', ''], usadasNaRodada: { ataque: false, defesa: false, denuncia: false } }
+        ];
+        let mostrarTarja = false;
+        let todasAbertas = false;
         let rodadaAtual = 1;
         let jogadaPendenteMesa = null;
 
         function obterQuantidadeCartas() {
+            const chave = document.getElementById('pacote-fotos')?.value || 'atores-asiaticos';
+            const pacote = PACOTES[chave] || PACOTES['atores-asiaticos'];
             const input = document.getElementById('qtd-cartas');
             let valor = parseInt(input ? input.value : '24', 10);
             if (Number.isNaN(valor)) valor = 24;
-            valor = Math.max(4, Math.min(24, valor));
-            if (input) input.value = valor;
-            return valor;
-        }
-
-        function obterListaNomesDigitados() {
-            const raw = document.getElementById('input-nomes-jogadores')?.value || '';
-            const nomes = raw
-                .split(',')
-                .map(n => n.trim())
-                .filter(Boolean);
-            return nomes.length > 0 ? nomes : ['Camila', 'Caroláine', 'André', 'Mirian'];
-        }
-
-        function criarParticipantes(nomes) {
-            return nomes.map((nome, idx) => ({
-                id: idx + 1,
-                nome,
-                acoesUsadas: {
-                    ataque: false,
-                    defesa: false,
-                    denuncia: false
-                }
-            }));
-        }
-
-        function distribuirCartasParaJogadores() {
-            const nomes = obterListaNomesDigitados();
-            participantesMesa = criarParticipantes(nomes);
-
-            const vivos = jogadores.filter(j => j.vivo);
-            vivos.forEach((carta, idx) => {
-                const dono = participantesMesa[idx % participantesMesa.length];
-                carta.donoNome = dono.nome;
-                carta.donoId = dono.id;
-            });
-
-            renderizarResumoDonos();
-            renderizarMesa();
-            mostrarBalao(`Cartas divididas entre: ${participantesMesa.map(p => p.nome).join(', ')}.`, 'sucesso');
-        }
-
-        function novaRodadaTresAcoes() {
-            participantesMesa.forEach(p => {
-                p.acoesUsadas = {
-                    ataque: false,
-                    defesa: false,
-                    denuncia: false
-                };
-            });
-            jogadores.forEach(j => {
-                j.protegido = false;
-            });
-            rodadaAtual++;
-            renderizarResumoDonos();
-            renderizarMesa();
-            mostrarBalao(`Rodada ${rodadaAtual}: cada jogador recebeu suas 3 ações (ataque, defesa e denúncia).`, 'sucesso');
-        }
-
-        function encontrarParticipanteDaCarta(numeroCarta) {
-            const carta = jogadores.find(j => j.numero === numeroCarta);
-            if (!carta) return null;
-            let p = participantesMesa.find(item => item.nome === carta.donoNome);
-            if (!p) {
-                p = {
-                    id: participantesMesa.length + 1,
-                    nome: carta.donoNome || `Jogador #${numeroCarta}`,
-                    acoesUsadas: { ataque: false, defesa: false, denuncia: false }
-                };
-                participantesMesa.push(p);
+            valor = Math.max(4, Math.min(pacote.totalDisponivel, valor));
+            if (input) {
+                input.max = pacote.totalDisponivel;
+                input.value = valor;
             }
-            return p;
-        }
-
-        function renderizarResumoDonos() {
-            const container = document.getElementById('resumo-donos');
-            if (!container) return;
-
-            container.innerHTML = '';
-            participantesMesa.forEach(p => {
-                const cartasDoJogador = jogadores
-                    .filter(j => j.vivo && j.donoNome === p.nome)
-                    .map(j => `#${j.numero}`);
-
-                const restantes = ['ataque', 'defesa', 'denuncia'].filter(a => !p.acoesUsadas[a]);
-
-                const div = document.createElement('div');
-                div.className = 'dono-chip';
-                div.innerHTML = `
-                    <div>
-                        <strong>${p.nome}</strong> (${cartasDoJogador.length} cartas: ${cartasDoJogador.join(', ') || '-'})<br>
-                        <small>Restam: ${restantes.length ? restantes.join(', ') : '0 ações'}</small>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
+            return valor;
         }
 
         function obterClasseTracinho(papel) {
@@ -855,42 +833,21 @@
             return FUNDOS_VERSO[indice];
         }
 
-        function sortearIndicesFotos(totalDisponivel, quantidade) {
-            const limite = Math.max(1, totalDisponivel);
-            const pool = [];
-            for (let i = 1; i <= limite; i++) {
-                pool.push(i);
-            }
-            pool.sort(() => Math.random() - 0.5);
-
-            const escolhidos = [];
-            for (let i = 0; i < quantidade; i++) {
-                escolhidos.push(pool[i % pool.length]);
-            }
-            return escolhidos;
-        }
-
-        function criarBaralhoInicial() {
+        function criarBaralhoSemAleatoriedade() {
             const chave = document.getElementById('pacote-fotos')?.value || 'atores-asiaticos';
             const pacote = PACOTES[chave] || PACOTES['atores-asiaticos'];
             const quantidadeCartas = obterQuantidadeCartas();
-            const indicesSorteados = sortearIndicesFotos(pacote.totalDisponivel, quantidadeCartas);
-            const nomes = obterListaNomesDigitados();
-            participantesMesa = criarParticipantes(nomes);
 
             jogadores = [];
             for (let i = 1; i <= quantidadeCartas; i++) {
-                const fotoNum = indicesSorteados[i - 1];
-                const dono = participantesMesa[(i - 1) % participantesMesa.length];
+                const fotoNum = ((i - 1) % pacote.totalDisponivel) + 1;
                 jogadores.push({
                     numero: i,
                     fotoNum,
                     pacote,
-                    donoNome: dono.nome,
-                    donoId: dono.id,
                     fotoFrente: montarCaminhoFoto(pacote, fotoNum, false),
                     fotoVerso: escolherFundoAleatorio(),
-                    virada: false,
+                    virada: todasAbertas,
                     papel: 'Vítima 👸🏽',
                     vivo: true,
                     ultimaAcao: null,
@@ -899,12 +856,14 @@
             }
         }
 
-        function sortearPapeis() {
+        function embaralharApenasPapeis() {
             const vivos = jogadores.filter(j => j.vivo);
             vivos.forEach(j => {
                 j.papel = 'Vítima 👸🏽';
                 j.protegido = false;
+                j.virada = false;
             });
+            todasAbertas = false;
 
             const indices = vivos.map((_, idx) => idx);
             indices.sort(() => Math.random() - 0.5);
@@ -914,17 +873,44 @@
                 vivos[indices[1]].papel = 'Policial 👮🏽‍♀️';
             }
 
-            adicionarLog(`🎲 ${jogadores.length} cartas | Papéis sorteados entre ${vivos.length} ativos.`);
+            adicionarLog(`🔀 Papéis sorteados entre ${vivos.length} cartas ativas (números e escolhas mantidos).`);
+            mostrarBalao('Papéis sorteados! Cartas viradas para baixo para a rodada.', 'sucesso');
+            renderizarParticipantes();
+            renderizarMesa();
         }
 
         function iniciarJogo() {
             jogadaPendenteMesa = null;
             fecharPalco(false);
-            criarBaralhoInicial();
-            sortearPapeis();
+            criarBaralhoSemAleatoriedade();
+            embaralharApenasPapeis();
             rodadaAtual = 1;
-            renderizarResumoDonos();
+            renderizarParticipantes();
             renderizarMesa();
+        }
+
+        function abrirOuFecharTodasCartas() {
+            const vivos = jogadores.filter(j => j.vivo);
+            todasAbertas = !todasAbertas;
+            vivos.forEach(j => {
+                j.virada = todasAbertas;
+            });
+            renderizarMesa();
+            mostrarBalao(
+                todasAbertas
+                    ? 'Cartas abertas para escolha (sem tarja de papel).'
+                    : 'Cartas fechadas para a rodada.',
+                'sucesso'
+            );
+        }
+
+        function toggleTarjaPapeis() {
+            mostrarTarja = !mostrarTarja;
+            renderizarMesa();
+            mostrarBalao(
+                mostrarTarja ? 'Tarja de papéis revelada na mesa.' : 'Tarja de papéis escondida.',
+                'sucesso'
+            );
         }
 
         function recomecarComSobreviventes() {
@@ -943,36 +929,190 @@
                 j.protegido = false;
             });
 
-            participantesMesa.forEach(p => {
-                p.acoesUsadas = { ataque: false, defesa: false, denuncia: false };
+            participantes.forEach(p => {
+                p.acoes = ['', '', ''];
+                p.usadasNaRodada = { ataque: false, defesa: false, denuncia: false };
             });
 
-            sortearPapeis();
+            embaralharApenasPapeis();
             rodadaAtual++;
-            renderizarResumoDonos();
+        }
+
+        function adicionarParticipante() {
+            const input = document.getElementById('input-novo-participante');
+            const nome = (input?.value || '').trim() || `Participante ${proximoIdParticipante}`;
+            const novo = {
+                id: proximoIdParticipante++,
+                nome,
+                cartasEscolhidas: [],
+                acoes: ['', '', ''],
+                usadasNaRodada: { ataque: false, defesa: false, denuncia: false }
+            };
+            participantes.push(novo);
+            if (input) input.value = '';
+            renderizarParticipantes();
+            renderizarMesa();
+            mostrarBalao(`${nome} adicionado! Agora escolha os números das cartas dele.`, 'sucesso');
+        }
+
+        function removerParticipante(id) {
+            if (participantes.length <= 1) {
+                mostrarBalao('Precisa ter pelo menos 1 participante na mesa.', 'erro');
+                return;
+            }
+            participantes = participantes.filter(p => p.id !== id);
+            renderizarParticipantes();
             renderizarMesa();
         }
 
-        function alternarVirarCarta(numero) {
-            const jogador = jogadores.find(j => j.numero === numero);
-            if (!jogador) return;
-            jogador.virada = !jogador.virada;
+        function atualizarNomeParticipante(id, novoNome) {
+            const p = participantes.find(item => item.id === id);
+            if (!p) return;
+            p.nome = novoNome.trim() || `Participante ${id}`;
+            renderizarParticipantes();
             renderizarMesa();
         }
 
-        function rolarDado() {
-            const display = document.getElementById('resultado-dado');
-            let giros = 0;
-            const intervalo = setInterval(() => {
-                display.innerText = Math.floor(Math.random() * 20) + 1;
-                giros++;
-                if (giros > 10) {
-                    clearInterval(intervalo);
-                    const numeroFinal = Math.floor(Math.random() * 20) + 1;
-                    display.innerText = numeroFinal;
-                    adicionarLog(`🎲 Dado: ${numeroFinal}`);
-                }
-            }, 50);
+        function atualizarCartasEscolhidas(id, textoNumeros) {
+            const p = participantes.find(item => item.id === id);
+            if (!p) return;
+            const nums = textoNumeros
+                .split(/[^0-9]+/)
+                .map(n => parseInt(n, 10))
+                .filter(n => !Number.isNaN(n) && n >= 1 && n <= jogadores.length);
+            p.cartasEscolhidas = [...new Set(nums)];
+            renderizarParticipantes();
+            renderizarMesa();
+        }
+
+        function dividirCartasAutomaticamente() {
+            if (participantes.length === 0) return;
+            const vivos = jogadores.filter(j => j.vivo);
+            const porJogador = Math.floor(vivos.length / participantes.length);
+
+            participantes.forEach(p => {
+                p.cartasEscolhidas = [];
+            });
+
+            if (porJogador >= 1) {
+                let cursor = 0;
+                participantes.forEach(p => {
+                    for (let k = 0; k < porJogador && cursor < vivos.length; k++) {
+                        p.cartasEscolhidas.push(vivos[cursor].numero);
+                        cursor++;
+                    }
+                });
+                mostrarBalao(`Divisão automática: ${porJogador} carta(s) por participante (sem fazer conta).`, 'sucesso');
+            } else {
+                vivos.forEach((carta, idx) => {
+                    const dono = participantes[idx % participantes.length];
+                    dono.cartasEscolhidas.push(carta.numero);
+                });
+                mostrarBalao('Cartas distribuídas de forma equilibrada entre os participantes.', 'sucesso');
+            }
+
+            renderizarParticipantes();
+            renderizarMesa();
+        }
+
+        function atualizarSlotAcao(id, slotIdx, valor) {
+            const p = participantes.find(item => item.id === id);
+            if (!p) return;
+            p.acoes[slotIdx] = valor;
+        }
+
+        function limparAcoesDaRodada() {
+            participantes.forEach(p => {
+                p.acoes = ['', '', ''];
+                p.usadasNaRodada = { ataque: false, defesa: false, denuncia: false };
+            });
+            jogadores.forEach(j => {
+                j.protegido = false;
+            });
+            rodadaAtual++;
+            renderizarParticipantes();
+            renderizarMesa();
+            mostrarBalao(`Rodada ${rodadaAtual} pronta! Cole as 3 ações de cada participante.`, 'sucesso');
+        }
+
+        function obterDonosDaCarta(numeroCarta) {
+            return participantes
+                .filter(p => p.cartasEscolhidas.includes(numeroCarta))
+                .map(p => p.nome);
+        }
+
+        function obterStatusCartasJogador(p) {
+            if (!p.cartasEscolhidas.length) {
+                return 'Nenhuma carta escolhida ainda (digite os números, ex: 8, 24).';
+            }
+            const detalhes = p.cartasEscolhidas.map(num => {
+                const carta = jogadores.find(j => j.numero === num);
+                if (!carta) return `#${num} (fora)`;
+                if (!carta.vivo) return `#${num} (eliminada)`;
+                return `#${num} (ativa)`;
+            });
+            const temViva = p.cartasEscolhidas.some(num => {
+                const c = jogadores.find(j => j.numero === num);
+                return c && c.vivo;
+            });
+            return `${temViva ? '🟢 Na disputa' : '🔴 Sem carta viva'} • ${detalhes.join(', ')}`;
+        }
+
+        function renderizarParticipantes() {
+            const wrap = document.getElementById('grade-participantes');
+            if (!wrap) return;
+            wrap.innerHTML = '';
+
+            participantes.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'quadro-participante';
+
+                div.innerHTML = `
+                    <div class="linha-topo-participante">
+                        <input
+                            type="text"
+                            class="input-nome-jogador"
+                            value="${p.nome}"
+                            placeholder="Nome ou @ do participante"
+                            onchange="atualizarNomeParticipante(${p.id}, this.value)"
+                        >
+                        <button class="btn-remover-p" onclick="removerParticipante(${p.id})" title="Remover">✕</button>
+                    </div>
+                    <div class="linha-cartas-escolhidas">
+                        <label>Cartas escolhidas (números separados por vírgula):</label>
+                        <input
+                            type="text"
+                            class="input-cartas-jogador"
+                            value="${p.cartasEscolhidas.join(', ')}"
+                            placeholder="Ex: 8, 24"
+                            onchange="atualizarCartasEscolhidas(${p.id}, this.value)"
+                        >
+                    </div>
+                    <div class="status-vitoria-jogador">${obterStatusCartasJogador(p)}</div>
+                    <input
+                        type="text"
+                        class="input-acao-slot"
+                        value="${p.acoes[0] || ''}"
+                        placeholder="Ação 1 (ex: 8 > 14 defesa)"
+                        oninput="atualizarSlotAcao(${p.id}, 0, this.value)"
+                    >
+                    <input
+                        type="text"
+                        class="input-acao-slot"
+                        value="${p.acoes[1] || ''}"
+                        placeholder="Ação 2 (ex: 8 > 10 ataque)"
+                        oninput="atualizarSlotAcao(${p.id}, 1, this.value)"
+                    >
+                    <input
+                        type="text"
+                        class="input-acao-slot"
+                        value="${p.acoes[2] || ''}"
+                        placeholder="Ação 3 (ex: 8 > 5 denuncia)"
+                        oninput="atualizarSlotAcao(${p.id}, 2, this.value)"
+                    >
+                `;
+                wrap.appendChild(div);
+            });
         }
 
         function normalizarAcao(textoAcao) {
@@ -1000,118 +1140,167 @@
             return { origem, alvo, acao, original: textoBruto.trim() };
         }
 
-        function processarComandoLive() {
-            const input = document.getElementById('input-comando-live');
-            const texto = input ? input.value : '';
-            const parsed = interpretarComando(texto);
+        function executarPlayRodada() {
+            const comandosParaRodar = [];
 
-            if (!parsed) {
-                mostrarBalao('Escreva nesse formato: 8 > 14 defesa (com espaço antes da ação).', 'erro');
-                return;
-            }
+            for (const p of participantes) {
+                const usadasNesteBloco = { ataque: false, defesa: false, denuncia: false };
+                for (const rawAcao of p.acoes) {
+                    const texto = (rawAcao || '').trim();
+                    if (!texto) continue;
 
-            const ator = jogadores.find(j => j.numero === parsed.origem && j.vivo);
-            const alvo = jogadores.find(j => j.numero === parsed.alvo && j.vivo);
+                    const parsed = interpretarComando(texto);
+                    if (!parsed) {
+                        mostrarBalao(`Em "${p.nome}", escreva nesse formato: 8 > 14 defesa (com espaço antes da ação).`, 'erro');
+                        return;
+                    }
 
-            if (!ator || !alvo) {
-                mostrarBalao('Número inválido ou participante já eliminado.', 'erro');
-                return;
-            }
+                    if (usadasNesteBloco[parsed.acao] || p.usadasNaRodada[parsed.acao]) {
+                        mostrarBalao(`${p.nome} já usou "${parsed.acao}" nesta rodada.`, 'erro');
+                        return;
+                    }
+                    usadasNesteBloco[parsed.acao] = true;
 
-            if (ator.ultimaAcao === parsed.acao) {
-                mostrarBalao(`O nº ${ator.numero} não pode repetir "${parsed.acao.toUpperCase()}" em rodadas seguidas.`, 'erro');
-                return;
-            }
+                    const ator = jogadores.find(j => j.numero === parsed.origem && j.vivo);
+                    const alvo = jogadores.find(j => j.numero === parsed.alvo && j.vivo);
+                    if (!ator || !alvo) {
+                        mostrarBalao(`Número inválido ou já eliminado em "${texto}".`, 'erro');
+                        return;
+                    }
 
-            const participanteOrigem = encontrarParticipanteDaCarta(ator.numero);
-            if (participanteOrigem && participanteOrigem.acoesUsadas[parsed.acao]) {
-                mostrarBalao(`${participanteOrigem.nome} já usou a ação de ${parsed.acao.toUpperCase()} nesta rodada.`, 'erro');
-                return;
-            }
+                    if (ator.ultimaAcao === parsed.acao) {
+                        mostrarBalao(`O nº ${ator.numero} não pode repetir "${parsed.acao}" em rodadas seguidas.`, 'erro');
+                        return;
+                    }
 
-            if (participanteOrigem) {
-                participanteOrigem.acoesUsadas[parsed.acao] = true;
-            }
-            ator.ultimaAcao = parsed.acao;
-
-            const donoAlvoTexto = alvo.donoNome ? ` (${alvo.donoNome})` : '';
-            let imagemAcao = IMAGENS_ACAO.defesa;
-            let falaAcao = `Prevaleceu DEFESA: nº ${alvo.numero}${donoAlvoTexto} protegido`;
-            let statusRetorno = `Resultado: DEFESA prevaleceu. Carta #${alvo.numero} volta VIRADA PARA BAIXO.`;
-
-            jogadaPendenteMesa = {
-                tipo: 'manter_baixo',
-                alvoNumero: alvo.numero
-            };
-
-            if (parsed.acao === 'defesa') {
-                alvo.protegido = true;
-                imagemAcao = IMAGENS_ACAO.defesa;
-                falaAcao = `Prevaleceu DEFESA: nº ${alvo.numero}${donoAlvoTexto} sob proteção`;
-                statusRetorno = `Resultado: DEFESA prevaleceu. Carta #${alvo.numero}${donoAlvoTexto} volta VIRADA PARA BAIXO.`;
-                adicionarLog(`👮🏽‍♀️ [${parsed.original}] ${participanteOrigem.nome} (#${ator.numero}) defendeu #${alvo.numero}${donoAlvoTexto}.`);
-            } else if (parsed.acao === 'ataque') {
-                if (ator.papel !== 'Ladrão 🦹🏽‍♀️') {
-                    imagemAcao = IMAGENS_ACAO.ataque;
-                    falaAcao = `Prevaleceu ATAQUE: nº ${alvo.numero}${donoAlvoTexto} atacado (sem eliminar)`;
-                    statusRetorno = `Resultado: ATAQUE registrado sem eliminação. Carta #${alvo.numero} fica VIRADA PARA BAIXO.`;
-                    adicionarLog(`⚔️ [${parsed.original}] ${participanteOrigem.nome} (#${ator.numero}) atacou #${alvo.numero}${donoAlvoTexto}.`);
-                } else if (alvo.papel === 'Policial 👮🏽‍♀️') {
-                    imagemAcao = IMAGENS_ACAO.ataqueFalhou;
-                    falaAcao = `Prevaleceu DEFESA DO POLICIAL: nº ${alvo.numero}${donoAlvoTexto} não cai`;
-                    statusRetorno = `Resultado: POLICIAL resistiu. Carta #${alvo.numero} volta VIRADA PARA BAIXO.`;
-                    adicionarLog(`🛡️ [${parsed.original}] Ladrão (#${ator.numero}) atacou Policial (#${alvo.numero}) e falhou.`);
-                } else if (alvo.protegido) {
-                    imagemAcao = IMAGENS_ACAO.ataqueFalhou;
-                    falaAcao = `Prevaleceu DEFESA: nº ${alvo.numero}${donoAlvoTexto} salvo! Ladrão #${ator.numero} preso`;
-                    statusRetorno = `Resultado: DEFESA bloqueou o ataque. Carta #${alvo.numero} fica VIRADA PARA BAIXO e Ladrão #${ator.numero} fica VIRADO PARA CIMA.`;
-                    jogadaPendenteMesa = {
-                        tipo: 'eliminar',
-                        alvoNumero: ator.numero,
-                        manterAlvoBaixo: alvo.numero
-                    };
-                    adicionarLog(`🚨 [${parsed.original}] Defesa salvou #${alvo.numero} e Ladrão (#${ator.numero}) foi preso!`);
-                } else {
-                    imagemAcao = IMAGENS_ACAO.biasSequestrado;
-                    falaAcao = `Prevaleceu ATAQUE: nº ${alvo.numero}${donoAlvoTexto} eliminado`;
-                    statusRetorno = `Resultado: ATAQUE prevaleceu. Carta #${alvo.numero}${donoAlvoTexto} ficará VIRADA PARA CIMA (eliminada).`;
-                    jogadaPendenteMesa = {
-                        tipo: 'eliminar',
-                        alvoNumero: alvo.numero
-                    };
-                    adicionarLog(`💀 [${parsed.original}] Ataque eliminou #${alvo.numero}${donoAlvoTexto}.`);
-                }
-            } else if (parsed.acao === 'denuncia') {
-                if (alvo.papel === 'Ladrão 🦹🏽‍♀️') {
-                    imagemAcao = IMAGENS_ACAO.denunciaCerta;
-                    falaAcao = `Prevaleceu DENÚNCIA: nº ${alvo.numero}${donoAlvoTexto} era o Ladrão`;
-                    statusRetorno = `Resultado: DENÚNCIA CERTA. Carta #${alvo.numero} ficará VIRADA PARA CIMA (eliminada).`;
-                    jogadaPendenteMesa = {
-                        tipo: 'eliminar',
-                        alvoNumero: alvo.numero,
-                        denunciante: ator
-                    };
-                    adicionarLog(`🎉 [${parsed.original}] ${participanteOrigem.nome} (#${ator.numero}) denunciou o Ladrão #${alvo.numero}!`);
-                } else {
-                    imagemAcao = IMAGENS_ACAO.denuncia;
-                    falaAcao = `Denúncia no nº ${alvo.numero}${donoAlvoTexto}: não era o Ladrão`;
-                    statusRetorno = `Resultado: DENÚNCIA sem eliminação. Carta #${alvo.numero} fica VIRADA PARA BAIXO.`;
-                    adicionarLog(`👸🏽 [${parsed.original}] ${participanteOrigem.nome} (#${ator.numero}) denunciou #${alvo.numero} (incorreto).`);
+                    comandosParaRodar.push({ participante: p, parsed, ator, alvo });
                 }
             }
 
-            abrirPalco({
-                comando: parsed.original,
-                imagemAcao,
-                falaAcao,
-                alvo,
-                statusRetorno
+            if (comandosParaRodar.length === 0) {
+                mostrarBalao('Cole pelo menos uma ação antes de clicar em Play.', 'erro');
+                return;
+            }
+
+            const defesas = comandosParaRodar.filter(item => item.parsed.acao === 'defesa');
+            const outras = comandosParaRodar.filter(item => item.parsed.acao !== 'defesa');
+            const ordenadas = [...defesas, ...outras];
+
+            let cenaDestaque = null;
+
+            for (const item of ordenadas) {
+                const { participante, parsed, ator, alvo } = item;
+                participante.usadasNaRodada[parsed.acao] = true;
+                ator.ultimaAcao = parsed.acao;
+
+                const donosAlvo = obterDonosDaCarta(alvo.numero);
+                const donoAlvoTexto = donosAlvo.length ? ` (${donosAlvo.join(', ')})` : '';
+
+                if (parsed.acao === 'defesa') {
+                    alvo.protegido = true;
+                    adicionarLog(`👮🏽‍♀️ [${parsed.original}] ${participante.nome} defendeu #${alvo.numero}${donoAlvoTexto}.`);
+                    if (!cenaDestaque || cenaDestaque.prioridade < 2) {
+                        cenaDestaque = {
+                            prioridade: 2,
+                            tituloTopo: `Ação Principal: Defesa (${parsed.original})`,
+                            imagemAcao: IMAGENS_ACAO.defesa,
+                            falaAcao: `Essa carta #${alvo.numero} está sob minha defesa`,
+                            alvo,
+                            statusRetorno: `Defesa ativa: carta #${alvo.numero} volta VIRADA PARA BAIXO protegida.`,
+                            pendente: { tipo: 'manter_baixo', alvoNumero: alvo.numero }
+                        };
+                    }
+                } else if (parsed.acao === 'ataque') {
+                    if (ator.papel !== 'Ladrão 🦹🏽‍♀️') {
+                        adicionarLog(`⚔️ [${parsed.original}] ${participante.nome} atacou #${alvo.numero}${donoAlvoTexto}.`);
+                        if (!cenaDestaque || cenaDestaque.prioridade < 1) {
+                            cenaDestaque = {
+                                prioridade: 1,
+                                tituloTopo: `Ação da Rodada: Ataque (${parsed.original})`,
+                                imagemAcao: IMAGENS_ACAO.ataque,
+                                falaAcao: `Ataque no nº ${alvo.numero}${donoAlvoTexto} (sem eliminação)`,
+                                alvo,
+                                statusRetorno: `Carta #${alvo.numero} continua VIRADA PARA BAIXO.`,
+                                pendente: { tipo: 'manter_baixo', alvoNumero: alvo.numero }
+                            };
+                        }
+                    } else if (alvo.papel === 'Policial 👮🏽‍♀️') {
+                        adicionarLog(`🛡️ [${parsed.original}] Ladrão (#${ator.numero}) atacou Policial (#${alvo.numero}) e falhou.`);
+                        cenaDestaque = {
+                            prioridade: 3,
+                            tituloTopo: `Ataque Falhou! (${parsed.original})`,
+                            imagemAcao: IMAGENS_ACAO.ataqueFalhou,
+                            falaAcao: `Nº ${alvo.numero}${donoAlvoTexto} é o Policial e não foi eliminado`,
+                            alvo,
+                            statusRetorno: `Carta #${alvo.numero} volta VIRADA PARA BAIXO.`,
+                            pendente: { tipo: 'manter_baixo', alvoNumero: alvo.numero }
+                        };
+                    } else if (alvo.protegido) {
+                        adicionarLog(`🚨 [${parsed.original}] Defesa salvou #${alvo.numero} e Ladrão (#${ator.numero}) foi preso!`);
+                        cenaDestaque = {
+                            prioridade: 4,
+                            tituloTopo: `Defesa Prevaleceu! Ladrão Preso (${parsed.original})`,
+                            imagemAcao: IMAGENS_ACAO.ataqueFalhou,
+                            falaAcao: `Nº ${alvo.numero}${donoAlvoTexto} protegido! Ladrão #${ator.numero} pego`,
+                            alvo: ator,
+                            statusRetorno: `Carta #${alvo.numero} fica VIRADA PARA BAIXO; Ladrão #${ator.numero} fica VIRADO PARA CIMA.`,
+                            pendente: { tipo: 'eliminar', alvoNumero: ator.numero, manterAlvoBaixo: alvo.numero }
+                        };
+                    } else {
+                        adicionarLog(`💀 [${parsed.original}] Eliminação: #${alvo.numero}${donoAlvoTexto} eliminado pelo Ladrão.`);
+                        cenaDestaque = {
+                            prioridade: 5,
+                            tituloTopo: `Eliminação da Rodada! (${parsed.original})`,
+                            imagemAcao: IMAGENS_ACAO.biasSequestrado,
+                            falaAcao: `Ladrão eliminou o nº ${alvo.numero}${donoAlvoTexto}`,
+                            alvo,
+                            statusRetorno: `Carta #${alvo.numero}${donoAlvoTexto} ficará VIRADA PARA CIMA (eliminada).`,
+                            pendente: { tipo: 'eliminar', alvoNumero: alvo.numero }
+                        };
+                    }
+                } else if (parsed.acao === 'denuncia') {
+                    if (alvo.papel === 'Ladrão 🦹🏽‍♀️') {
+                        adicionarLog(`🎉 [${parsed.original}] Denúncia certa! Ladrão #${alvo.numero}${donoAlvoTexto} eliminado.`);
+                        cenaDestaque = {
+                            prioridade: 5,
+                            tituloTopo: `Ladrão Denunciado! (${parsed.original})`,
+                            imagemAcao: IMAGENS_ACAO.denunciaCerta,
+                            falaAcao: `Denúncia certa! Nº ${alvo.numero}${donoAlvoTexto} era o Ladrão`,
+                            alvo,
+                            statusRetorno: `Carta #${alvo.numero} ficará VIRADA PARA CIMA (eliminada).`,
+                            pendente: { tipo: 'eliminar', alvoNumero: alvo.numero, denunciante: ator }
+                        };
+                    } else {
+                        adicionarLog(`👸🏽 [${parsed.original}] ${participante.nome} denunciou #${alvo.numero} (incorreto).`);
+                        if (!cenaDestaque || cenaDestaque.prioridade < 1) {
+                            cenaDestaque = {
+                                prioridade: 1,
+                                tituloTopo: `Denúncia na Rodada (${parsed.original})`,
+                                imagemAcao: IMAGENS_ACAO.denuncia,
+                                falaAcao: `Denúncia no nº ${alvo.numero}${donoAlvoTexto}: não era o Ladrão`,
+                                alvo,
+                                statusRetorno: `Carta #${alvo.numero} continua VIRADA PARA BAIXO.`,
+                                pendente: { tipo: 'manter_baixo', alvoNumero: alvo.numero }
+                            };
+                        }
+                    }
+                }
+            }
+
+            participantes.forEach(p => {
+                p.acoes = ['', '', ''];
             });
 
-            if (input) input.value = '';
+            if (cenaDestaque) {
+                jogadaPendenteMesa = cenaDestaque.pendente;
+                abrirPalco(cenaDestaque);
+            }
+
+            renderizarParticipantes();
+            renderizarMesa();
         }
 
-        function abrirPalco({ comando, imagemAcao, falaAcao, alvo, statusRetorno }) {
+        function abrirPalco({ tituloTopo, imagemAcao, falaAcao, alvo, statusRetorno }) {
             const overlay = document.getElementById('palco-overlay');
             const cmdEl = document.getElementById('palco-comando-texto');
             const imgAcaoEl = document.getElementById('palco-img-acao');
@@ -1120,7 +1309,10 @@
             const nomeBiasEl = document.getElementById('palco-nome-bias');
             const statusEl = document.getElementById('palco-status-retorno');
 
-            cmdEl.innerText = comando;
+            const donos = obterDonosDaCarta(alvo.numero);
+            const sufixoDono = donos.length ? ` • ${donos.join(', ')}` : '';
+
+            cmdEl.innerText = tituloTopo;
             imgAcaoEl.dataset.fallbackAplicado = 'false';
             imgAcaoEl.src = imagemAcao;
             falaEl.innerText = falaAcao;
@@ -1132,7 +1324,7 @@
             imgBiasEl.dataset.sufixo = alvo.pacote.sufixo;
             imgBiasEl.dataset.numeroCarta = String(alvo.numero);
             imgBiasEl.src = alvo.fotoFrente;
-            nomeBiasEl.innerText = alvo.donoNome ? `Carta #${alvo.numero} • ${alvo.donoNome}` : `Carta #${alvo.numero}`;
+            nomeBiasEl.innerText = `Carta #${alvo.numero}${sufixoDono}`;
             statusEl.innerText = statusRetorno;
 
             overlay.classList.add('ativo');
@@ -1163,7 +1355,7 @@
                 }
 
                 jogadaPendenteMesa = null;
-                renderizarResumoDonos();
+                renderizarParticipantes();
                 renderizarMesa();
             }
         }
@@ -1177,7 +1369,10 @@
 
             const vivos = jogadores.filter(j => j.vivo);
             if (vivos.length <= 3) {
-                adicionarLog(`🏆 Fim de jogo! Sobraram: ${vivos.map(v => '#' + v.numero).join(', ')}`);
+                const vencedores = participantes
+                    .filter(p => p.cartasEscolhidas.some(num => vivos.some(v => v.numero === num)))
+                    .map(p => p.nome);
+                adicionarLog(`🏆 Fim de jogo! Cartas restantes: ${vivos.map(v => '#' + v.numero).join(', ')} | Na disputa: ${vencedores.join(', ') || '-'}`);
             }
         }
 
@@ -1192,9 +1387,26 @@
             }
         }
 
-        function toggleRevelarPapeis() {
-            modoMestre = !modoMestre;
+        function alternarVirarCarta(numero) {
+            const jogador = jogadores.find(j => j.numero === numero);
+            if (!jogador) return;
+            jogador.virada = !jogador.virada;
             renderizarMesa();
+        }
+
+        function rolarDado() {
+            const display = document.getElementById('resultado-dado');
+            let giros = 0;
+            const intervalo = setInterval(() => {
+                display.innerText = Math.floor(Math.random() * 20) + 1;
+                giros++;
+                if (giros > 10) {
+                    clearInterval(intervalo);
+                    const numeroFinal = Math.floor(Math.random() * 20) + 1;
+                    display.innerText = numeroFinal;
+                    adicionarLog(`🎲 Dado: ${numeroFinal}`);
+                }
+            }, 50);
         }
 
         function adicionarLog(mensagem) {
@@ -1242,12 +1454,13 @@
                     jogador.virada ? 'virada' : '',
                     !jogador.vivo ? 'eliminada' : '',
                     jogador.protegido ? 'protegida' : '',
-                    modoMestre ? 'revelar' : ''
+                    mostrarTarja ? 'mostrar-tarja' : ''
                 ].filter(Boolean).join(' ');
 
                 div.onclick = () => alternarVirarCarta(jogador.numero);
 
                 const classeTracinho = obterClasseTracinho(jogador.papel);
+                const donos = obterDonosDaCarta(jogador.numero);
 
                 div.innerHTML = `
                     <span class="numero-carta">#${jogador.numero}</span>
@@ -1266,7 +1479,7 @@
                                 data-numero-carta="${jogador.numero}"
                                 onerror="tratarErroFotoBias(this, ${jogador.numero})"
                             >
-                            <span class="dono-carta-badge">${jogador.donoNome || ''}</span>
+                            <span class="dono-carta-badge">${donos.join(', ') || 'Livre'}</span>
                             <div class="info-carta">
                                 <strong>${jogador.vivo ? '🟢 Em jogo' : '🔴 Eliminado'}</strong><br>
                                 <small>${jogador.protegido ? '🛡️ Protegido' : 'Última: ' + (jogador.ultimaAcao ? jogador.ultimaAcao.toUpperCase() : 'Nenhuma')}</small>
