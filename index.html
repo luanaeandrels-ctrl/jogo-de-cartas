@@ -256,21 +256,35 @@
             font-size: 0.9rem;
         }
 
-        .badge-papel {
+        /* Tracinho colorido sem texto ao ativar revelar */
+        .tracinho-papel {
             position: absolute;
-            top: 8px;
-            right: 8px;
+            top: 10px;
+            right: 10px;
             z-index: 2;
-            background-color: #d63031;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: bold;
+            width: 28px;
+            height: 8px;
+            border-radius: 999px;
             display: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
         }
 
-        .carta-container.revelar .badge-papel {
+        .tracinho-papel.cor-azul {
+            background-color: #0984e3;
+            border: 1px solid #a8d8ff;
+        }
+
+        .tracinho-papel.cor-preto {
+            background-color: #09090d;
+            border: 1px solid #d1d8e0;
+        }
+
+        .tracinho-papel.cor-vermelho {
+            background-color: #ff4757;
+            border: 1px solid #ffb8b8;
+        }
+
+        .carta-container.revelar .tracinho-papel {
             display: block;
         }
 
@@ -292,7 +306,6 @@
             box-shadow: 0 0 12px rgba(0, 206, 201, 0.7);
         }
 
-        /* Balãozinho Bonitinho de Aviso / Erro */
         .balao-aviso-wrap {
             position: fixed;
             top: 20px;
@@ -353,7 +366,6 @@
             }
         }
 
-        /* Palco Grande 9:16 na Tela do PC */
         .palco-overlay {
             position: fixed;
             inset: 0;
@@ -422,7 +434,6 @@
             display: block;
         }
 
-        /* Frase pequenininha em cima sem tampar o nome embaixo */
         .frase-topo-acao {
             position: absolute;
             top: 10px;
@@ -623,6 +634,12 @@
         let rodadaAtual = 1;
         let jogadaPendenteMesa = null;
 
+        function obterClasseTracinho(papel) {
+            if (papel.includes('Policial')) return 'cor-azul';
+            if (papel.includes('Ladrão')) return 'cor-preto';
+            return 'cor-vermelho';
+        }
+
         function mostrarBalao(mensagem, tipo = 'erro') {
             const wrap = document.getElementById('balao-aviso-wrap');
             if (!wrap) return;
@@ -795,7 +812,6 @@
         }
 
         function interpretarComando(textoBruto) {
-            // Exige espaço antes da ação para evitar "9 > 12defesa" colado
             const match = textoBruto.trim().match(/^(\d+)\s*(?:>|->|-)\s*(\d+)\s+([a-zA-ZÀ-ÿ]+.*)$/);
             if (!match) return null;
 
@@ -929,7 +945,7 @@
             imgBiasEl.dataset.sufixo = alvo.pacote.sufixo;
             imgBiasEl.dataset.numeroCarta = String(alvo.numero);
             imgBiasEl.src = alvo.fotoFrente;
-            nomeBiasEl.innerText = `Carta #${alvo.numero} • Foto ${alvo.fotoNum}`;
+            nomeBiasEl.innerText = `Carta #${alvo.numero}`;
             statusEl.innerText = statusRetorno;
 
             overlay.classList.add('ativo');
@@ -1043,9 +1059,11 @@
 
                 div.onclick = () => alternarVirarCarta(jogador.numero);
 
+                const classeTracinho = obterClasseTracinho(jogador.papel);
+
                 div.innerHTML = `
                     <span class="numero-carta">#${jogador.numero}</span>
-                    <span class="badge-papel">${jogador.papel}</span>
+                    <span class="tracinho-papel ${classeTracinho}" aria-hidden="true"></span>
                     <div class="carta-inner">
                         <div class="carta-face carta-verso">
                             <img src="${jogador.fotoVerso}" alt="Verso da carta ${jogador.numero}" onerror="tratarErroFotoBias(this, ${jogador.numero})">
@@ -1053,7 +1071,7 @@
                         <div class="carta-face carta-frente">
                             <img
                                 src="${jogador.fotoFrente}"
-                                alt="Foto ${jogador.fotoNum}"
+                                alt="Carta ${jogador.numero}"
                                 data-foto-num="${jogador.fotoNum}"
                                 data-pasta="${jogador.pacote.pasta}"
                                 data-sufixo="${jogador.pacote.sufixo}"
