@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Cartas</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #121218;
+            background-image: linear-gradient(rgba(12, 12, 20, 0.78), rgba(12, 12, 20, 0.86)), url('fundo.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f0f0f5;
+            padding: 15px;
+            min-height: 100vh;
+        }
+
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            background-color: rgba(30, 30, 42, 0.92);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #33334d;
+        }
+
+        header h1 {
+            font-size: 1.3rem;
+            color: #ffcc00;
+        }
+
+        .controles-topo {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .label-inline {
+            font-size: 0.9rem;
+            color: #cfcfe6;
+        }
+
+        .controles-topo select,
+        .controles-topo input[type="number"] {
+            padding: 9px 10px;
+            border-radius: 6px;
+            border: 1px solid #555577;
+            background-color: #2d2d44;
+            color: white;
+            font-weight: bold;
+        }
+
+        .controles-topo input[type="number"] {
+            width: 68px;
+        }
+
+        .controles-topo button {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            background-color: #6c5ce7;
+        }
+
+        .controles-topo button:hover {
+            background-color: #5649c0;
+        }
+
+        .container-principal {
+            display: grid;
+            grid-template-columns: 290px 1fr;
+            gap: 20px;
+        }
+
+        .painel-controle {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .box-dado, .box-acoes, .box-log {
+            background-color: rgba(30, 30, 42, 0.92);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #33334d;
+        }
+
+        h2 {
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            color: #a29bfe;
+        }
+
+        .dado-display {
+            font-size: 2.8rem;
+            font-weight: bold;
+            text-align: center;
+            background: #121218;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            color: #00cec9;
+            border: 2px dashed #00cec9;
+        }
+
+        .painel-controle button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background-color: #00b894;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .painel-controle button:hover {
+            background-color: #00997a;
+        }
+
+        .box-acoes label {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+
+        .box-acoes input, .box-acoes select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #121218;
+            color: white;
+        }
+
+        .card-acao-visual {
+            margin-top: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #3d3d5c;
+            background-color: #121218;
+        }
+
+        .card-acao-visual img {
+            width: 100%;
+            max-height: 220px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .box-log {
+            max-height: 260px;
+            overflow-y: auto;
+        }
+
+        #lista-log {
+            list-style: none;
+            font-size: 0.85rem;
+        }
+
+        #lista-log li {
+            padding: 6px 0;
+            border-bottom: 1px solid #2d2d3d;
+        }
+
+        .mesa-cartas {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            background-color: rgba(18, 18, 28, 0.45);
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .carta-container {
+            perspective: 1000px;
+            height: 235px;
+            cursor: pointer;
+        }
+
+        .carta-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.55s;
+            transform-style: preserve-3d;
+        }
+
+        .carta-container.virada .carta-inner {
+            transform: rotateY(180deg);
+        }
+
+        .carta-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 3px solid #3d3d5c;
+            background-color: #252535;
+        }
+
+        .carta-frente {
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .carta-face img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .carta-frente img {
+            height: 170px;
+        }
+
+        .numero-carta {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            z-index: 2;
+            background-color: rgba(0, 0, 0, 0.85);
+            color: #ffcc00;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+        }
+
+        .badge-papel {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 2;
+            background-color: #d63031;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: none;
+        }
+
+        .carta-container.revelar .badge-papel {
+            display: block;
+        }
+
+        .info-carta {
+            padding: 8px;
+            font-size: 0.82rem;
+            background-color: #1e1e2a;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .carta-container.eliminada .carta-face {
+            opacity: 0.35;
+            filter: grayscale(100%);
+            border-color: #d63031;
+        }
+
+        .carta-container.protegida .carta-face {
+            border-color: #0984e3;
+            box-shadow: 0 0 12px #0984e3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🃏 MESA DE INVESTIGAÇÃO</h1>
+        <div class="controles-topo">
+            <label for="pacote-fotos" class="label-inline">Grupo:</label>
+            <select id="pacote-fotos" onchange="iniciarJogo()">
+                <option value="atores-asiaticos">Atores Asiáticos</option>
+                <option value="atrizes-asiaticas">Atrizes Asiáticas</option>
+                <option value="atores-ocidentais">Atores Ocidentais</option>
+                <option value="atrizes-ocidentais">Atrizes Ocidentais</option>
+            </select>
+
+            <label for="qtd-cartas" class="label-inline">Cartas:</label>
+            <input type="number" id="qtd-cartas" min="4" max="20" value="20" onchange="iniciarJogo()">
+
+            <button onclick="iniciarJogo()">🎲 Sortear Cartas e Papéis</button>
+            <button onclick="recomecarComSobreviventes()">🔄 Novo Sorteio (Sobreviventes)</button>
+            <button onclick="toggleRevelarPapeis()">👁️ Ver / Esconder Papéis</button>
+        </div>
+    </header>
+
+    <main class="container-principal">
+        <aside class="painel-controle">
+            <div class="box-dado">
+                <h2>🎲 Dado</h2>
+                <div id="resultado-dado" class="dado-display">-</div>
+                <button onclick="rolarDado()">Rolar Dado (1 a 20)</button>
+            </div>
+
+            <div class="box-acoes">
+                <h2>⚡ Jogada</h2>
+                <label for="jogador-origem">Quem age (Nº na mesa):</label>
+                <input type="number" id="jogador-origem" min="1" max="20" placeholder="Ex: 6">
+
+                <label for="tipo-acao">Ação:</label>
+                <select id="tipo-acao">
+                    <option value="ataque">🦹🏽‍♀️ Ataque</option>
+                    <option value="defesa">👮🏽‍♀️ Defesa</option>
+                    <option value="denuncia">👸🏽 Denúncia</option>
+                </select>
+
+                <label for="jogador-alvo">Alvo (Nº na mesa):</label>
+                <input type="number" id="jogador-alvo" min="1" max="20" placeholder="Ex: 10">
+
+                <button onclick="registrarAcao()">Confirmar Ação</button>
+
+                <div class="card-acao-visual">
+                    <img id="imagem-acao-atual" src="investigacao.png" alt="Cartinha de ação" onerror="tratarErroAcao(this)">
+                </div>
+            </div>
+
+            <div class="box-log">
+                <h2>📜 Histórico</h2>
+                <ul id="lista-log"></ul>
+            </div>
+        </aside>
+
+        <section class="mesa-cartas" id="mesa-cartas"></section>
+    </main>
+
+    <script>
+        const FUNDOS_VERSO = [
+            'verso1.png',
+            'verso2.png',
+            'verso3.png',
+            'verso4.png'
+        ];
+
+        const IMAGENS_ACAO = {
+            ataque: 'ataque.png',
+            ataqueFalhou: 'ataque-falhou.png',
+            biasSequestrado: 'bias-sequestrado.png',
+            defesa: 'defesa.png',
+            denuncia: 'denuncia.png',
+            denunciaCerta: 'denuncia-certa.png',
+            investigacao: 'investigacao.png'
+        };
+
+        // Tudo na raiz junto do index.html: ajuste "totalDisponivel" conforme as fotos que subir
+        const PACOTES = {
+            'atores-asiaticos': {
+                prefixo: 'IMG (',
+                sufixo: ').jpg',
+                totalDisponivel: 37
+            },
+            'atrizes-asiaticas': {
+                prefixo: 'IMG (',
+                sufixo: ').jpg',
+                totalDisponivel: 20
+            },
+            'atores-ocidentais': {
+                prefixo: 'IMG (',
+                sufixo: ').jpg',
+                totalDisponivel: 20
+            },
+            'atrizes-ocidentais': {
+                prefixo: 'IMG (',
+                sufixo: ').jpg',
+                totalDisponivel: 20
+            }
+        };
+
+        let jogadores = [];
+        let modoMestre = false;
+        let rodadaAtual = 1;
+
+        function mostrarCartinhaAcao(caminho) {
+            const img = document.getElementById('imagem-acao-atual');
+            if (!img || !caminho) return;
+            img.dataset.fallbackAplicado = 'false';
+            img.src = caminho;
+        }
+
+        function obterQuantidadeCartas() {
+            const input = document.getElementById('qtd-cartas');
+            let valor = parseInt(input ? input.value : '20', 10);
+            if (Number.isNaN(valor)) valor = 20;
+            valor = Math.max(4, Math.min(20, valor));
+            if (input) input.value = valor;
+            return valor;
+        }
+
+        function formatarNumeroDoisDigitos(num) {
+            return String(num).padStart(2, '0');
+        }
+
+        function nomeArquivoImagem(pacote, indiceFoto) {
+            return `${pacote.prefixo}${formatarNumeroDoisDigitos(indiceFoto)}${pacote.sufixo}`;
+        }
+
+        function escolherFundoAleatorio() {
+            const indice = Math.floor(Math.random() * FUNDOS_VERSO.length);
+            return FUNDOS_VERSO[indice];
+        }
+
+        function sortearIndicesFotos(totalDisponivel, quantidade) {
+            const limite = Math.max(1, totalDisponivel);
+            const pool = [];
+
+            for (let i = 1; i <= limite; i++) {
+                pool.push(i);
+            }
+
+            pool.sort(() => Math.random() - 0.5);
+
+            const escolhidos = [];
+            for (let i = 0; i < quantidade; i++) {
+                escolhidos.push(pool[i % pool.length]);
+            }
+            return escolhidos;
+        }
+
+        function criarBaralhoInicial() {
+            const chave = document.getElementById('pacote-fotos')?.value || 'atores-asiaticos';
+            const pacote = PACOTES[chave] || PACOTES['atores-asiaticos'];
+            const quantidadeCartas = obterQuantidadeCartas();
+            const indicesSorteados = sortearIndicesFotos(pacote.totalDisponivel, quantidadeCartas);
+
+            jogadores = [];
+            for (let i = 1; i <= quantidadeCartas; i++) {
+                const fotoNum = indicesSorteados[i - 1];
+                jogadores.push({
+                    numero: i,
+                    fotoNum,
+                    fotoFrente: nomeArquivoImagem(pacote, fotoNum),
+                    fotoVerso: escolherFundoAleatorio(),
+                    virada: false,
+                    papel: 'Vítima 👸🏽',
+                    vivo: true,
+                    ultimaAcao: null,
+                    protegido: false
+                });
+            }
+        }
+
+        function sortearPapeis() {
+            const vivos = jogadores.filter(j => j.vivo);
+
+            vivos.forEach(j => {
+                j.papel = 'Vítima 👸🏽';
+                j.protegido = false;
+            });
+
+            const indices = vivos.map((_, idx) => idx);
+            indices.sort(() => Math.random() - 0.5);
+
+            if (indices.length >= 2) {
+                vivos[indices[0]].papel = 'Ladrão 🦹🏽‍♀️';
+                vivos[indices[1]].papel = 'Policial 👮🏽‍♀️';
+            }
+
+            adicionarLog(`🎲 ${jogadores.length} cartas na mesa | Papéis sorteados entre ${vivos.length} ativos.`);
+        }
+
+        function iniciarJogo() {
+            criarBaralhoInicial();
+            sortearPapeis();
+            rodadaAtual = 1;
+            mostrarCartinhaAcao(IMAGENS_ACAO.investigacao);
+            renderizarMesa();
+        }
+
+        function recomecarComSobreviventes() {
+            const vivos = jogadores.filter(j => j.vivo);
+            if (vivos.length <= 3) {
+                alert('Fim de jogo! Restam 3 ou menos participantes na mesa.');
+                return;
+            }
+
+            vivos.forEach(j => {
+                j.fotoVerso = escolherFundoAleatorio();
+                j.virada = false;
+            });
+
+            sortearPapeis();
+            rodadaAtual++;
+            mostrarCartinhaAcao(IMAGENS_ACAO.investigacao);
+            renderizarMesa();
+        }
+
+        function alternarVirarCarta(numero) {
+            const jogador = jogadores.find(j => j.numero === numero);
+            if (!jogador) return;
+            jogador.virada = !jogador.virada;
+            renderizarMesa();
+        }
+
+        function rolarDado() {
+            const display = document.getElementById('resultado-dado');
+            let giros = 0;
+
+            const intervalo = setInterval(() => {
+                display.innerText = Math.floor(Math.random() * 20) + 1;
+                giros++;
+                if (giros > 10) {
+                    clearInterval(intervalo);
+                    const numeroFinal = Math.floor(Math.random() * 20) + 1;
+                    display.innerText = numeroFinal;
+                    adicionarLog(`🎲 Dado: ${numeroFinal}`);
+                }
+            }, 50);
+        }
+
+        function registrarAcao() {
+            const numOrigem = parseInt(document.getElementById('jogador-origem').value, 10);
+            const tipoAcao = document.getElementById('tipo-acao').value;
+            const numAlvo = parseInt(document.getElementById('jogador-alvo').value, 10);
+
+            const ator = jogadores.find(j => j.numero === numOrigem && j.vivo);
+            const alvo = jogadores.find(j => j.numero === numAlvo && j.vivo);
+
+            if (!ator || !alvo) {
+                alert('Número inválido ou participante já eliminado.');
+                return;
+            }
+
+            if (ator.ultimaAcao === tipoAcao) {
+                alert(`O nº ${ator.numero} não pode repetir "${tipoAcao.toUpperCase()}" em rodadas seguidas.`);
+                return;
+            }
+
+            ator.ultimaAcao = tipoAcao;
+
+            if (tipoAcao === 'defesa') {
+                alvo.protegido = true;
+                mostrarCartinhaAcao(IMAGENS_ACAO.defesa);
+                adicionarLog(`👮🏽‍♀️ Nº ${ator.numero} defendeu o nº ${alvo.numero}.`);
+            } else if (tipoAcao === 'ataque') {
+                if (ator.papel !== 'Ladrão 🦹🏽‍♀️') {
+                    mostrarCartinhaAcao(IMAGENS_ACAO.ataque);
+                    adicionarLog(`⚔️ Nº ${ator.numero} fez ação de ataque no nº ${alvo.numero}.`);
+                } else if (alvo.papel === 'Policial 👮🏽‍♀️') {
+                    mostrarCartinhaAcao(IMAGENS_ACAO.ataqueFalhou);
+                    adicionarLog(`🛡️ Ladrão (nº ${ator.numero}) tentou atacar o Policial (nº ${alvo.numero}), mas o Policial não é eliminado.`);
+                } else if (alvo.protegido) {
+                    mostrarCartinhaAcao(IMAGENS_ACAO.ataqueFalhou);
+                    adicionarLog(`🚨 Ladrão (nº ${ator.numero}) atacou o nº ${alvo.numero} protegido e foi pego!`);
+                    eliminarJogador(ator.numero);
+                } else {
+                    mostrarCartinhaAcao(IMAGENS_ACAO.biasSequestrado);
+                    adicionarLog(`💀 Ataque eliminou o nº ${alvo.numero}.`);
+                    eliminarJogador(alvo.numero);
+                }
+            } else if (tipoAcao === 'denuncia') {
+                if (alvo.papel === 'Ladrão 🦹🏽‍♀️') {
+                    mostrarCartinhaAcao(IMAGENS_ACAO.denunciaCerta);
+                    adicionarLog(`🎉 Nº ${ator.numero} denunciou o nº ${alvo.numero} e acertou: era o Ladrão!`);
+                    verificarFaseFinal(ator);
+                    eliminarJogador(alvo.numero);
+                } else {
+                    mostrarCartinhaAcao(IMAGENS_ACAO.denuncia);
+                    adicionarLog(`👸🏽 Nº ${ator.numero} denunciou o nº ${alvo.numero}, mas não era o Ladrão.`);
+                }
+            }
+
+            renderizarMesa();
+        }
+
+        function eliminarJogador(numero) {
+            const jogador = jogadores.find(j => j.numero === numero);
+            if (jogador) {
+                jogador.vivo = false;
+                jogador.virada = true;
+            }
+
+            const vivos = jogadores.filter(j => j.vivo);
+            if (vivos.length <= 3) {
+                adicionarLog(`🏆 Fim de jogo! Sobraram: ${vivos.map(v => '#' + v.numero).join(', ')}`);
+            }
+        }
+
+        function verificarFaseFinal(denunciante) {
+            const vivos = jogadores.filter(j => j.vivo);
+            if (vivos.length === 4) {
+                const policial = vivos.find(j => j.papel === 'Policial 👮🏽‍♀️');
+                const sobrevivente = vivos.find(j => j.papel === 'Vítima 👸🏽' && j.numero !== denunciante.numero);
+                adicionarLog(
+                    `🏅 Pontuação (4 cartas): 1º Policial (#${policial ? policial.numero : '-'}) | 2º Denunciante (#${denunciante.numero}) | 3º Sobrevivente (#${sobrevivente ? sobrevivente.numero : '-'})`
+                );
+            }
+        }
+
+        function toggleRevelarPapeis() {
+            modoMestre = !modoMestre;
+            renderizarMesa();
+        }
+
+        function adicionarLog(mensagem) {
+            const ul = document.getElementById('lista-log');
+            const li = document.createElement('li');
+            li.innerText = mensagem;
+            ul.prepend(li);
+        }
+
+        function tratarErroAcao(imgElement) {
+            if (imgElement.dataset.fallbackAplicado === 'true') return;
+            imgElement.dataset.fallbackAplicado = 'true';
+            imgElement.src = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+                `<svg xmlns="http://www.w3.org/2000/svg" width="240" height="140"><rect width="100%" height="100%" fill="#1b1b29"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#a29bfe" font-family="sans-serif" font-size="14">Cartinha de Ação</text></svg>`
+            )}`;
+        }
+
+        function tratarErroImagem(imgElement, numeroCarta) {
+            if (imgElement.dataset.fallbackAplicado === 'true') return;
+            imgElement.dataset.fallbackAplicado = 'true';
+            imgElement.src = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+                `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="100%" height="100%" fill="#2d2d44"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#ffcc00" font-family="sans-serif" font-size="16">Carta #${numeroCarta}</text></svg>`
+            )}`;
+        }
+
+        function renderizarMesa() {
+            const mesa = document.getElementById('mesa-cartas');
+            mesa.innerHTML = '';
+
+            jogadores.forEach(jogador => {
+                const div = document.createElement('div');
+                div.className = [
+                    'carta-container',
+                    jogador.virada ? 'virada' : '',
+                    !jogador.vivo ? 'eliminada' : '',
+                    jogador.protegido ? 'protegida' : '',
+                    modoMestre ? 'revelar' : ''
+                ].filter(Boolean).join(' ');
+
+                div.onclick = () => alternarVirarCarta(jogador.numero);
+
+                div.innerHTML = `
+                    <span class="numero-carta">#${jogador.numero}</span>
+                    <span class="badge-papel">${jogador.papel}</span>
+                    <div class="carta-inner">
+                        <div class="carta-face carta-verso">
+                            <img src="${jogador.fotoVerso}" alt="Verso da carta ${jogador.numero}" onerror="tratarErroImagem(this, ${jogador.numero})">
+                        </div>
+                        <div class="carta-face carta-frente">
+                            <img src="${jogador.fotoFrente}" alt="Foto ${jogador.fotoNum}" onerror="tratarErroImagem(this, ${jogador.numero})">
+                            <div class="info-carta">
+                                <strong>${jogador.vivo ? '🟢 Em jogo' : '🔴 Eliminado'}</strong><br>
+                                <small>Última: ${jogador.ultimaAcao ? jogador.ultimaAcao.toUpperCase() : 'Nenhuma'}</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                mesa.appendChild(div);
+            });
+        }
+
+        iniciarJogo();
+    </script>
+</body>
+</html>
